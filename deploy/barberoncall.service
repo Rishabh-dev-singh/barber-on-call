@@ -9,7 +9,7 @@ WorkingDirectory=/var/www/barberoncall/backend
 Environment="PATH=/var/www/barberoncall/venv/bin"
 ExecStart=/var/www/barberoncall/venv/bin/gunicorn \
           --workers 3 \
-          --bind 127.0.0.1:8000 \
+          --bind 127.0.0.1:8001 \
           --timeout 120 \
           --access-logfile /var/log/gunicorn/barberoncall_access.log \
           --error-logfile /var/log/gunicorn/barberoncall_error.log \
