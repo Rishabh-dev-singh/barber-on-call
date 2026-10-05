@@ -22,11 +22,26 @@ import BarberProfile from "../pages/barber/BarberProfile";
 import BarberChangePassword from "../pages/barber/BarberChangePassword";
 import BarberApplication from "../pages/barber/BarberApplication";
 
+import PrivacyPolicy from "../pages/legal/PrivacyPolicy";
+import TermsConditions from "../pages/legal/TermsConditions";
+import RefundPolicy from "../pages/legal/RefundPolicy";
+import ContactUs from "../pages/legal/ContactUs";
+
 function AppRoutes() {
   return (
     <Routes>
       {/* Landing */}
       <Route path="/" element={<Home />} />
+
+      {/* Legal & Policy Pages (Razorpay & Compliance) */}
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms-conditions" element={<TermsConditions />} />
+      <Route path="/terms" element={<TermsConditions />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/refund" element={<RefundPolicy />} />
+      <Route path="/contact-us" element={<ContactUs />} />
+      <Route path="/contact" element={<ContactUs />} />
 
       {/* Public Customer Routes */}
       <Route path="/customer/login" element={<CustomerLogin />} />

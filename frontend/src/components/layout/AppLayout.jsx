@@ -11,13 +11,21 @@ export default function AppLayout({ children }) {
   const { isAuthenticated, isCustomer } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Chrome (Mobile Header & Bottom Navigation) is hidden on public landing and authentication screens
+  // Chrome (Mobile Header & Bottom Navigation) is hidden on public landing, legal and auth screens
   const hideChrome = [
     "/",
     "/customer/login",
     "/customer/register",
     "/barber/login",
     "/barber/apply",
+    "/privacy-policy",
+    "/privacy",
+    "/terms-conditions",
+    "/terms",
+    "/refund-policy",
+    "/refund",
+    "/contact-us",
+    "/contact",
   ].includes(location.pathname);
 
   useEffect(() => {

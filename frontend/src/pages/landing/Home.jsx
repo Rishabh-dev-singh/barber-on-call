@@ -917,31 +917,88 @@ export default function Home() {
           </div>
 
           {/* Divider */}
-          <div style={{ height: "1px", backgroundColor: "rgba(255, 255, 255, 0.07)" }} />
+          <div style={{ height: "1px", backgroundColor: "rgba(255, 255, 255, 0.08)" }} />
 
-          {/* Bottom Legal & Copyright Row */}
+          {/* Legal Links (Razorpay & Compliance) */}
           <div
             style={{
               display: "flex",
+              flexWrap: "wrap",
               alignItems: "center",
-              justifyContent: "space-between",
-              fontSize: "11px",
-              color: "#777",
+              justifyContent: "center",
+              gap: "8px 18px",
+              fontSize: "12px",
             }}
           >
-            <div style={{ display: "flex", gap: "14px" }}>
-              <span style={{ cursor: "pointer" }} onClick={() => alert("Privacy Policy — Barber On Call")}>
-                Privacy Policy
-              </span>
-              <span style={{ cursor: "pointer" }} onClick={() => alert("Terms & Conditions — Barber On Call")}>
-                Terms & Conditions
-              </span>
-              <span style={{ cursor: "pointer" }} onClick={() => alert("Contact: support@barberoncall.com")}>
-                Contact
-              </span>
-            </div>
+            <Link
+              to="/privacy-policy"
+              style={{
+                color: "rgba(250, 247, 239, 0.7)",
+                textDecoration: "none",
+                fontWeight: 500,
+                transition: "color 0.15s ease",
+              }}
+            >
+              Privacy Policy
+            </Link>
+            <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+            <Link
+              to="/terms-conditions"
+              style={{
+                color: "rgba(250, 247, 239, 0.7)",
+                textDecoration: "none",
+                fontWeight: 500,
+                transition: "color 0.15s ease",
+              }}
+            >
+              Terms & Conditions
+            </Link>
+            <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+            <Link
+              to="/refund-policy"
+              style={{
+                color: "rgba(250, 247, 239, 0.7)",
+                textDecoration: "none",
+                fontWeight: 500,
+                transition: "color 0.15s ease",
+              }}
+            >
+              Cancellation & Refund
+            </Link>
+            <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+            <Link
+              to="/contact-us"
+              style={{
+                color: "#E5A93C",
+                textDecoration: "none",
+                fontWeight: 600,
+                transition: "color 0.15s ease",
+              }}
+            >
+              Contact Us
+            </Link>
+          </div>
 
-            <span>© 2026 Barber On Call</span>
+          {/* Bottom Copyright & Trust Note */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              textAlign: "center",
+              fontSize: "11px",
+              color: "rgba(250, 247, 239, 0.5)",
+              paddingTop: "4px",
+            }}
+          >
+            <div>
+              © 2026 <strong>Barber On Call</strong> (Prop. Atar Singh). All rights reserved.
+            </div>
+            <div style={{ fontSize: "10.5px", color: "rgba(250, 247, 239, 0.4)" }}>
+              Jaipur, Rajasthan • Helpline: +91 9784 863800 • Razorpay Secured
+            </div>
           </div>
 
           {/* iOS Home Indicator Bar */}
@@ -949,9 +1006,9 @@ export default function Home() {
             style={{
               width: "134px",
               height: "4px",
-              backgroundColor: "rgba(255, 255, 255, 0.35)",
+              backgroundColor: "rgba(255, 255, 255, 0.25)",
               borderRadius: "4px",
-              margin: "8px auto 0",
+              margin: "12px auto 0",
             }}
           />
         </div>

@@ -131,14 +131,44 @@ function Footer() {
           </div>
         </div>
 
+        {/* Legal Links (Razorpay & Compliance) */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px 16px",
+            fontSize: "12px",
+            borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+            paddingTop: "16px",
+          }}
+        >
+          <Link to="/privacy-policy" style={{ color: "rgba(250, 247, 239, 0.7)", textDecoration: "none", fontWeight: 500 }}>
+            Privacy Policy
+          </Link>
+          <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+          <Link to="/terms-conditions" style={{ color: "rgba(250, 247, 239, 0.7)", textDecoration: "none", fontWeight: 500 }}>
+            Terms & Conditions
+          </Link>
+          <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+          <Link to="/refund-policy" style={{ color: "rgba(250, 247, 239, 0.7)", textDecoration: "none", fontWeight: 500 }}>
+            Cancellation & Refund
+          </Link>
+          <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>•</span>
+          <Link to="/contact-us" style={{ color: "#D4A017", textDecoration: "none", fontWeight: 600 }}>
+            Contact Us
+          </Link>
+        </div>
+
         {/* Minimal Copyright & Guarantee */}
-        <div style={{ textAlign: "center", borderTop: "1px solid rgba(255, 255, 255, 0.06)", paddingTop: "16px" }}>
+        <div style={{ textAlign: "center", paddingTop: "8px" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#16A34A", fontSize: "12px", fontWeight: 600, marginBottom: "8px" }}>
             <ShieldCheck size={14} color="#16A34A" />
             <span>Verified Professionals • 100% Hygienic Service</span>
           </div>
           <p style={{ margin: 0, fontSize: "11px", color: "rgba(250, 247, 239, 0.5)" }}>
-            © {new Date().getFullYear()} Barber On Call • Premium Grooming Platform
+            © {new Date().getFullYear()} Barber On Call (Prop. Atar Singh) • Premium Grooming Platform
           </p>
         </div>
 
