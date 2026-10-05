@@ -1,0 +1,167 @@
+.boc-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(21, 21, 21, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+
+@media (min-width: 600px) {
+  .boc-modal-backdrop {
+    align-items: center;
+    padding: 20px;
+  }
+}
+
+.boc-modal-panel {
+  background-color: #FFFFFF;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: slideUpModal 0.25s ease-out;
+}
+
+@media (min-width: 600px) {
+  .boc-modal-panel {
+    border-radius: var(--radius-lg);
+  }
+}
+
+@keyframes slideUpModal {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.boc-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boc-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boc-modal-icon {
+  color: var(--primary-accent);
+}
+
+.boc-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.boc-modal-count-pill {
+  background-color: #151515;
+  color: var(--primary-accent);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.boc-modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boc-modal-text-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-accent);
+  cursor: pointer;
+}
+
+.boc-modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: #FAF7EF;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.boc-modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.boc-modal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.boc-notification-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boc-notif-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-light);
+  transition: background-color 0.15s ease;
+}
+
+.boc-notif-card.unread {
+  background-color: #FFFDF5;
+  border-color: rgba(212, 160, 23, 0.4);
+}
+
+.boc-notif-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.boc-notif-msg {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0 0 6px 0;
+}
+
+.boc-notif-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #94A3B8;
+}
+

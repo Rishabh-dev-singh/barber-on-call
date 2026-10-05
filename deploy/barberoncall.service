@@ -1,0 +1,21 @@
+[Unit]
+Description=Barber On Call Gunicorn Daemon
+After=network.target postgresql.service
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/var/www/barberoncall/backend
+Environment="PATH=/var/www/barberoncall/venv/bin"
+ExecStart=/var/www/barberoncall/venv/bin/gunicorn \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          --timeout 120 \
+          --access-logfile /var/log/gunicorn/barberoncall_access.log \
+          --error-logfile /var/log/gunicorn/barberoncall_error.log \
+          config.wsgi:application
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

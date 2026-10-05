@@ -1,0 +1,10 @@
+{
+  "appId": "com.barberoncall.app",
+  "appName": "Barber On Call",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true
+  }
+}
+

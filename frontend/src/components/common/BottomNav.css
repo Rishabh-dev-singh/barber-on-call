@@ -1,0 +1,108 @@
+/* ==============================================================================
+   Native Glassmorphic Bottom Navigation Bar
+   ============================================================================== */
+
+.native-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(212, 160, 23, 0.2);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  padding-top: 6px;
+  transition: all 0.3s ease;
+}
+
+.bottom-nav-container {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 54px;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.92);
+}
+
+.nav-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 26px;
+}
+
+.nav-svg-icon {
+  color: #7A7A7A;
+  transition: all 0.25s ease;
+}
+
+.bottom-nav-item.active .nav-svg-icon {
+  color: #D4A017;
+  transform: translateY(-2px);
+}
+
+.active-glow-pill {
+  position: absolute;
+  bottom: -4px;
+  width: 16px;
+  height: 3px;
+  background: #D4A017;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(212, 160, 23, 0.6);
+  animation: glowIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes glowIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #7A7A7A;
+  margin-top: 3px;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.bottom-nav-item.active .nav-label {
+  color: #151515;
+  font-weight: 800;
+}
+
+@media (min-width: 769px) {
+  .native-bottom-nav {
+    display: none;
+  }
+}

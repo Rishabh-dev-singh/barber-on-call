@@ -1,0 +1,188 @@
+/* ==============================================================================
+   Native Mobile App Header — Barber On Call
+   ============================================================================== */
+
+.native-mobile-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: rgba(250, 247, 239, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-light);
+  padding-top: max(env(safe-area-inset-top, 0px), 10px);
+  padding-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(21, 21, 21, 0.03);
+}
+
+.mobile-header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Root Screen Layout */
+.root-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: #151515;
+  border: 1px solid rgba(212, 160, 23, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(21, 21, 21, 0.15);
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #151515;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.location-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+.location-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.header-icon-btn:active {
+  transform: scale(0.94);
+  background: #F5F2E9;
+}
+
+.notification-badge-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--status-error);
+  color: #FFFFFF;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #FAF7EF;
+}
+
+.header-avatar-btn {
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.user-avatar-initial {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #151515;
+  color: var(--primary-accent);
+  border: 1px solid rgba(212, 160, 23, 0.4);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(21, 21, 21, 0.1);
+}
+
+/* Subpage Layout with Back Button */
+.subpage-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+}
+
+.header-back-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-back-btn:active {
+  transform: scale(0.94);
+  background: #F5F2E9;
+}
+
+.header-subpage-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #151515;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.header-spacer {
+  width: 38px;
+}

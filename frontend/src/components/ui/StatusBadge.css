@@ -1,0 +1,57 @@
+/* Status Badge Styles */
+.boc-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.boc-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Variants */
+.boc-badge-success {
+  background-color: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.boc-badge-gold {
+  background-color: #FFFDF0;
+  color: #B47805;
+  border: 1px solid rgba(212, 160, 23, 0.35);
+}
+
+.boc-badge-warning {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.boc-badge-error {
+  background-color: var(--status-error-bg);
+  color: var(--status-error);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.boc-badge-info {
+  background-color: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.boc-badge-neutral {
+  background-color: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid #E5E7EB;
+}
+

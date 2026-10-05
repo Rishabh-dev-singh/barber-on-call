@@ -1,0 +1,37 @@
+.boc-skeleton {
+  background: linear-gradient(
+    90deg,
+    #F3F0E6 0%,
+    #E8E4D8 50%,
+    #F3F0E6 100%
+  );
+  background-size: 200% 100%;
+  animation: bocShimmer 1.5s infinite;
+  display: block;
+}
+
+.boc-skeleton-text {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.boc-skeleton-circular {
+  border-radius: 50%;
+}
+
+.boc-skeleton-rectangular {
+  border-radius: var(--radius-md);
+}
+
+.boc-skeleton-card {
+  height: 180px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+@keyframes bocShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+

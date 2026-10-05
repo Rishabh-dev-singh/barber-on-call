@@ -1,0 +1,132 @@
+/* ==============================================================================
+   BARBER ON CALL — DESIGN SYSTEM BUTTON SUITE
+   ============================================================================== */
+
+.boc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+  user-select: none;
+  outline: none;
+}
+
+.boc-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.boc-btn-full {
+  width: 100%;
+}
+
+/* Sizes */
+.boc-btn-sm {
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.boc-btn-md {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.boc-btn-lg {
+  height: 50px;
+  padding: 0 24px;
+  font-size: 15px;
+}
+
+/* Primary (Accent Gold) */
+.boc-btn-primary,
+.boc-btn-gold {
+  background-color: var(--primary-accent);
+  color: #151515;
+  border-color: var(--primary-accent);
+  box-shadow: 0 2px 6px rgba(212, 160, 23, 0.25);
+}
+
+.boc-btn-primary:hover:not(:disabled),
+.boc-btn-gold:hover:not(:disabled) {
+  background-color: var(--primary-accent-hover);
+  border-color: var(--primary-accent-hover);
+}
+
+/* Secondary (Charcoal Near-Black) */
+.boc-btn-secondary {
+  background-color: #151515;
+  color: #FFFFFF;
+  border-color: #151515;
+}
+
+.boc-btn-secondary:hover:not(:disabled) {
+  background-color: #262626;
+}
+
+/* Outline */
+.boc-btn-outline {
+  background-color: #FFFFFF;
+  color: #151515;
+  border-color: var(--border-light);
+}
+
+.boc-btn-outline:hover:not(:disabled) {
+  background-color: #F5F2E9;
+  border-color: #151515;
+}
+
+/* Ghost */
+.boc-btn-ghost {
+  background-color: transparent;
+  color: #6E6E6E;
+  border-color: transparent;
+}
+
+.boc-btn-ghost:hover:not(:disabled) {
+  background-color: rgba(21, 21, 21, 0.05);
+  color: #151515;
+}
+
+/* Danger */
+.boc-btn-danger {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+.boc-btn-danger:hover:not(:disabled) {
+  background-color: #FEE2E2;
+}
+
+/* Disabled */
+.boc-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Spinner */
+.boc-btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: bocSpin 0.7s linear infinite;
+}
+
+@keyframes bocSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
