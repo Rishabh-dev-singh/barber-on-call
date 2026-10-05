@@ -27,6 +27,13 @@ sudo -u postgres psql -d barber_on_call -c "GRANT ALL ON SCHEMA public TO barber
 echo "📁 [4/8] Creating Directory Structure & Log Directories..."
 mkdir -p /var/www/barberoncall
 mkdir -p /var/log/gunicorn
+
+# Handle case sensitivity on Linux
+if [ -d "/var/www/barberoncall/Backend" ] && [ ! -d "/var/www/barberoncall/backend" ]; then
+    mv /var/www/barberoncall/Backend /var/www/barberoncall/backend
+fi
+ln -sf /var/www/barberoncall/backend /var/www/barberoncall/Backend 2>/dev/null || true
+
 mkdir -p /var/www/barberoncall/backend/media
 mkdir -p /var/www/barberoncall/backend/staticfiles
 chmod -R 775 /var/www/barberoncall/backend/media

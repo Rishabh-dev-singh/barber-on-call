@@ -6,6 +6,11 @@
 set -e
 
 APP_DIR="/var/www/barberoncall"
+if [ -d "$APP_DIR/Backend" ] && [ ! -d "$APP_DIR/backend" ]; then
+    mv "$APP_DIR/Backend" "$APP_DIR/backend"
+fi
+ln -sf "$APP_DIR/backend" "$APP_DIR/Backend" 2>/dev/null || true
+
 BACKEND_DIR="$APP_DIR/backend"
 FRONTEND_DIR="$APP_DIR/frontend"
 VENV_BIN="$APP_DIR/venv/bin"
