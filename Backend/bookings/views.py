@@ -1233,6 +1233,22 @@ class RazorpayWebhookView(APIView):
         order_id = payload_entity.get("order_id")
         payment_id = payload_entity.get("id")
 
+        if not webhook_secret:
+            # If webhook secret is not set, we MUST verify directly with Razorpay API before trusting
+            if not payment_id or not order_id:
+                return Response({"detail": "Payment details missing."}, status=status.HTTP_400_BAD_REQUEST)
+            key_id = getattr(settings, "RAZORPAY_KEY_ID", "").strip()
+            key_secret = getattr(settings, "RAZORPAY_KEY_SECRET", "").strip()
+            if not key_id or not key_secret:
+                return Response({"detail": "Gateway unconfigured."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                client = razorpay.Client(auth=(key_id, key_secret))
+                rzp_p = client.payment.fetch(payment_id)
+                if rzp_p.get("status") not in ["captured", "authorized"] or rzp_p.get("order_id") != order_id:
+                    return Response({"detail": "Payment verification failed."}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as err:
+                return Response({"detail": f"Payment check failed: {str(err)}"}, status=status.HTTP_400_BAD_REQUEST)
+
         if event in ["payment.captured", "order.paid"] and order_id:
             try:
                 booking = BookingRequest.objects.get(razorpay_order_id=order_id)
