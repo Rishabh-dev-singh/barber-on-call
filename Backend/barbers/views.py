@@ -97,6 +97,7 @@ class BarberApplicationCreateView(generics.CreateAPIView):
     queryset = BarberApplication.objects.all()
     serializer_class = BarberApplicationSerializer
     permission_classes = [permissions.AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
         serializer.save(status="pending")

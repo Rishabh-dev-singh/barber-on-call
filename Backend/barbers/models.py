@@ -159,7 +159,10 @@ class BarberApplication(models.Model):
         max_length=15
     )
 
-    email = models.EmailField()
+    email = models.EmailField(
+        blank=True,
+        default=""
+    )
 
     address = models.TextField()
 
@@ -168,7 +171,9 @@ class BarberApplication(models.Model):
     )
 
     pincode = models.CharField(
-        max_length=10
+        max_length=10,
+        blank=True,
+        default=""
     )
 
     latitude = models.FloatField(

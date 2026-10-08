@@ -124,8 +124,46 @@ class BarberProfileSerializer(serializers.ModelSerializer):
 
 class BarberApplicationSerializer(serializers.ModelSerializer):
     aadhaar_document = serializers.FileField(write_only=True, required=True)
+    email = serializers.EmailField(required=False, allow_blank=True, default="")
+    pincode = serializers.CharField(max_length=10, required=False, allow_blank=True, default="")
+    service_radius = serializers.FloatField(required=False, default=5)
+    home_visit_charge = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+    haircut_shop_price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+    haircut_home_price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+    beard_shop_price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+    beard_home_price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
+
+    def to_internal_value(self, data):
+        # Handle mutable dictionary copy to normalize empty strings for numeric fields
+        mutable_data = data.copy() if hasattr(data, "copy") else dict(data)
+        numeric_fields = [
+            "home_visit_charge",
+            "haircut_shop_price",
+            "haircut_home_price",
+            "beard_shop_price",
+            "beard_home_price",
+        ]
+        for field in numeric_fields:
+            if field in mutable_data:
+                val = mutable_data.get(field)
+                if val is None or val == "" or str(val).strip() == "":
+                    mutable_data[field] = "0"
+
+        if "service_radius" in mutable_data:
+            val = mutable_data.get("service_radius")
+            if val is None or val == "" or str(val).strip() == "":
+                mutable_data["service_radius"] = 5
+
+        if "provides_chair_mirror" in mutable_data:
+            val = mutable_data.get("provides_chair_mirror")
+            if isinstance(val, str):
+                mutable_data["provides_chair_mirror"] = val.lower() in ["true", "1", "yes"]
+
+        return super().to_internal_value(mutable_data)
 
     def validate_aadhaar_document(self, value):
+        if not value:
+            raise serializers.ValidationError("Please upload your Aadhaar or ID verification document.")
         max_size = 5 * 1024 * 1024  # 5MB limit
         if value.size > max_size:
             raise serializers.ValidationError("Aadhaar document size must not exceed 5MB.")

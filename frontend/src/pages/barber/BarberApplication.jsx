@@ -55,11 +55,30 @@ function BarberApplication() {
     setLoading(true);
     setError("");
 
+    if (!formData.mobile || formData.mobile.length !== 10) {
+      setError("Please provide a valid 10-digit mobile number.");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.aadhaar_document) {
+      setError("Please upload your Aadhaar or ID verification document (PDF, JPG, PNG).");
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null && formData[key] !== undefined) {
-          data.append(key, formData[key]);
+        let val = formData[key];
+        // Normalize price and number fields
+        if (
+          ["home_visit_charge", "haircut_shop_price", "haircut_home_price", "beard_shop_price", "beard_home_price"].includes(key)
+        ) {
+          val = val === "" || val === null || val === undefined ? "0" : String(val);
+        }
+        if (val !== null && val !== undefined) {
+          data.append(key, val);
         }
       });
 
@@ -71,9 +90,22 @@ function BarberApplication() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.detail || result.message || "Failed to submit application. Please check all details."
-        );
+        let errorMsg = "Failed to submit application. Please check all details.";
+        if (result.detail) {
+          errorMsg = result.detail;
+        } else if (result.message) {
+          errorMsg = result.message;
+        } else if (typeof result === "object") {
+          const errors = Object.entries(result).map(([field, msgs]) => {
+            const readableField = field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            const msgText = Array.isArray(msgs) ? msgs.join(", ") : String(msgs);
+            return `${readableField}: ${msgText}`;
+          });
+          if (errors.length > 0) {
+            errorMsg = errors.join(" • ");
+          }
+        }
+        throw new Error(errorMsg);
       }
 
       setSuccess(true);
@@ -434,15 +466,25 @@ function BarberApplication() {
           {/* Aadhaar / Document Upload */}
           <div>
             <label style={{ fontSize: "12px", fontWeight: "700", color: "#151515", display: "block", marginBottom: "4px" }}>
-              Aadhaar / ID Verification Document
+              Aadhaar / ID Verification Document *
             </label>
             <input
               type="file"
               name="aadhaar_document"
               onChange={handleChange}
               accept="image/*,.pdf"
-              style={{ fontSize: "12px", width: "100%" }}
+              required
+              style={{ fontSize: "12px", width: "100%", padding: "6px 0" }}
             />
+            {formData.aadhaar_document && (
+              <div style={{ marginTop: "4px", fontSize: "11.5px", color: "#16A34A", display: "flex", alignItems: "center", gap: "4px" }}>
+                <CheckCircle size={13} color="#16A34A" />
+                <span>Selected: {formData.aadhaar_document.name} ({(formData.aadhaar_document.size / 1024 / 1024).toFixed(2)} MB)</span>
+              </div>
+            )}
+            <p style={{ margin: "4px 0 0", fontSize: "11px", color: "#888" }}>
+              Accepted formats: PDF, JPG, JPEG, PNG (Max size: 5MB)
+            </p>
           </div>
 
           <button
