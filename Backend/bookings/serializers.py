@@ -95,6 +95,7 @@ class CustomerBookingSerializer(serializers.ModelSerializer):
             "razorpay_payment_id",
             "is_reviewed",
             "review",
+            "completion_otp",
             "created_at",
             "accepted_at",
             "completed_at",

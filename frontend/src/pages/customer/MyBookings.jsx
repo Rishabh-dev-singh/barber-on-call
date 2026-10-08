@@ -533,6 +533,58 @@ function MyBookings() {
                   </span>
                 </div>
 
+                {/* Service Completion OTP Box (Uber/Urban Company style) */}
+                {booking.completion_otp && ["confirmed", "accepted"].includes(booking.status) && (
+                  <div style={{
+                    backgroundColor: "#FEF3C7",
+                    border: "1.5px dashed #D4A017",
+                    borderRadius: "12px",
+                    padding: "10px 14px",
+                    marginTop: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "10px"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "8px",
+                        backgroundColor: "#151515",
+                        color: "#D4A017",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: "900",
+                        fontSize: "14px"
+                      }}>
+                        🔑
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "11px", fontWeight: "800", color: "#B45309", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                          Service Security OTP
+                        </div>
+                        <div style={{ fontSize: "10.5px", color: "#78350F" }}>
+                          Share with barber only after haircut is done
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{
+                      backgroundColor: "#151515",
+                      color: "#FDE68A",
+                      padding: "6px 14px",
+                      borderRadius: "8px",
+                      fontSize: "18px",
+                      fontWeight: "900",
+                      letterSpacing: "4px",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
+                    }}>
+                      {booking.completion_otp}
+                    </div>
+                  </div>
+                )}
+
                 {/* Actions Row */}
                 <div className="card-actions-row">
                   <button
@@ -737,6 +789,41 @@ function MyBookings() {
                 <span style={{ color: "#D4A017" }}>₹{detailsModal.booking.total_amount}</span>
               </div>
             </div>
+
+            {/* Service Completion OTP Card inside modal */}
+            {detailsModal.booking.completion_otp && ["confirmed", "accepted"].includes(detailsModal.booking.status) && (
+              <div style={{
+                backgroundColor: "#FEF3C7",
+                border: "1.5px dashed #D4A017",
+                borderRadius: "14px",
+                padding: "14px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px"
+              }}>
+                <div>
+                  <div style={{ fontSize: "12px", fontWeight: "800", color: "#B45309", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                    Service Completion OTP
+                  </div>
+                  <div style={{ fontSize: "11px", color: "#78350F", marginTop: "2px" }}>
+                    Share this code with your barber only after service is completed
+                  </div>
+                </div>
+                <div style={{
+                  backgroundColor: "#151515",
+                  color: "#FDE68A",
+                  padding: "8px 16px",
+                  borderRadius: "10px",
+                  fontSize: "20px",
+                  fontWeight: "900",
+                  letterSpacing: "4px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                }}>
+                  {detailsModal.booking.completion_otp}
+                </div>
+              </div>
+            )}
 
             {/* Actions Inside Modal */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>

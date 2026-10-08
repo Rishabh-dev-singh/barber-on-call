@@ -80,6 +80,13 @@ class BookingRequest(models.Model):
     razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
     razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
 
+    completion_otp = models.CharField(
+        max_length=6,
+        blank=True,
+        default="",
+        help_text="4-digit secure OTP given to customer to verify service completion"
+    )
+
     accepted_barber = models.ForeignKey(
         'barbers.BarberProfile',
         on_delete=models.SET_NULL,
@@ -92,6 +99,12 @@ class BookingRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.completion_otp:
+            import random
+            self.completion_otp = f"{random.randint(1000, 9999)}"
+        super().save(*args, **kwargs)
 
     def get_services_display(self):
         names = list(self.services.values_list("name", flat=True))

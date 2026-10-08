@@ -410,6 +410,23 @@ class BarberBookingCompleteView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if booking.completion_otp:
+            entered_otp = str(request.data.get("otp", "")).strip()
+            if not entered_otp:
+                return Response(
+                    {
+                        "detail": "Please provide the 4-digit Service Completion OTP given by the customer."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if entered_otp != str(booking.completion_otp).strip():
+                return Response(
+                    {
+                        "detail": "Incorrect OTP. Please enter the valid 4-digit OTP shown on customer's phone."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         booking.status = "completed"
         booking.completed_at = timezone.now()
         if booking.payment_status != "paid":

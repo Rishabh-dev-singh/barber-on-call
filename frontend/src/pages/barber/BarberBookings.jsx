@@ -20,6 +20,8 @@ import {
   X,
   RefreshCw,
   User,
+  Lock,
+  ShieldCheck,
 } from "../../components/common/Icons";
 import StatusBadge from "../../components/ui/StatusBadge";
 import EmptyState from "../../components/ui/EmptyState";
@@ -30,6 +32,14 @@ function BarberBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [otpModal, setOtpModal] = useState({
+    isOpen: false,
+    bookingId: null,
+    customerName: "",
+    otp: "",
+    error: "",
+    loading: false,
+  });
 
   const refreshAccessToken = async () => {
     const refreshToken = getRefreshToken("barber");
@@ -148,25 +158,67 @@ function BarberBookings() {
     }
   };
 
-  const completeBooking = async (bookingId) => {
-    const confirmDone = window.confirm("Mark this booking as fully completed?");
-    if (!confirmDone) return;
+  const handleOpenCompleteModal = (booking) => {
+    setOtpModal({
+      isOpen: true,
+      bookingId: booking.booking_id || booking.id,
+      customerName: booking.customer?.name || "Client",
+      otp: "",
+      error: "",
+      loading: false,
+    });
+  };
+
+  const handleVerifyAndComplete = async (e) => {
+    e.preventDefault();
+    const enteredOtp = otpModal.otp.trim();
+    if (!enteredOtp || enteredOtp.length !== 4) {
+      setOtpModal((prev) => ({
+        ...prev,
+        error: "Please enter the valid 4-digit Service OTP from the customer.",
+      }));
+      return;
+    }
+
+    setOtpModal((prev) => ({ ...prev, loading: true, error: "" }));
 
     try {
       const response = await authenticatedFetch(
-        `${API_BASE}/api/bookings/barber/${bookingId}/complete/`,
-        { method: "POST" }
+        `${API_BASE}/api/bookings/barber/${otpModal.bookingId}/complete/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ otp: enteredOtp }),
+        }
       );
       const data = await response.json();
       if (!response.ok) {
-        alert(data.detail || "Unable to complete booking.");
+        setOtpModal((prev) => ({
+          ...prev,
+          loading: false,
+          error: data.detail || "Invalid OTP. Please check with customer.",
+        }));
         return;
       }
-      alert("Booking marked as completed!");
+      setOtpModal({
+        isOpen: false,
+        bookingId: null,
+        customerName: "",
+        otp: "",
+        error: "",
+        loading: false,
+      });
+      alert("🎉 Booking successfully completed! Earnings updated.");
       await fetchBookings();
     } catch (err) {
       console.error(err);
-      alert("Something went wrong.");
+      setOtpModal((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Network error. Please try again.",
+      }));
     }
   };
 
@@ -433,7 +485,7 @@ function BarberBookings() {
                 {["confirmed", "accepted", "in_service"].includes(b.booking_status) && (
                   <button
                     type="button"
-                    onClick={() => completeBooking(b.booking_id || b.id)}
+                    onClick={() => handleOpenCompleteModal(b)}
                     style={{
                       marginLeft: "auto",
                       padding: "9px 16px",
@@ -462,6 +514,185 @@ function BarberBookings() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ================= OTP VERIFICATION MODAL ================= */}
+      {otpModal.isOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.65)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+            padding: "16px",
+            backdropFilter: "blur(4px)",
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !otpModal.loading) {
+              setOtpModal((prev) => ({ ...prev, isOpen: false }));
+            }
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: "20px",
+              padding: "24px 20px",
+              width: "100%",
+              maxWidth: "380px",
+              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.25)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+              position: "relative",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  backgroundColor: "#FAF7EF",
+                  border: "1px solid rgba(212, 160, 23, 0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                  <ShieldCheck size={20} color="#D4A017" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#151515", margin: 0 }}>
+                    Verify Completion
+                  </h3>
+                  <p style={{ margin: "2px 0 0", fontSize: "11.5px", color: "#6E6E6E" }}>
+                    Service OTP verification
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={otpModal.loading}
+                onClick={() => setOtpModal((prev) => ({ ...prev, isOpen: false }))}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "4px",
+                  color: "#6E6E6E",
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{
+              backgroundColor: "#FAF7EF",
+              padding: "12px",
+              borderRadius: "12px",
+              fontSize: "12px",
+              color: "#6E6E6E",
+              lineHeight: "1.4",
+            }}>
+              Ask <strong>{otpModal.customerName}</strong> for the <strong>4-digit Service OTP</strong> displayed on their screen to complete this job.
+            </div>
+
+            {otpModal.error && (
+              <div style={{
+                backgroundColor: "#FEF2F2",
+                border: "1px solid #FECACA",
+                color: "#DC2626",
+                padding: "10px 12px",
+                borderRadius: "10px",
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}>
+                <AlertCircle size={15} color="#DC2626" />
+                <span>{otpModal.error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleVerifyAndComplete} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div>
+                <label style={{ fontSize: "11px", fontWeight: "750", color: "#6E6E6E", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>
+                  Customer 4-Digit OTP
+                </label>
+                <input
+                  type="text"
+                  maxLength={4}
+                  autoFocus
+                  placeholder="• • • •"
+                  value={otpModal.otp}
+                  onChange={(e) => {
+                    const clean = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    setOtpModal((prev) => ({ ...prev, otp: clean, error: "" }));
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "2px solid #D4A017",
+                    backgroundColor: "#FAF7EF",
+                    fontSize: "24px",
+                    fontWeight: "900",
+                    textAlign: "center",
+                    letterSpacing: "12px",
+                    color: "#151515",
+                    boxSizing: "border-box",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  type="button"
+                  disabled={otpModal.loading}
+                  onClick={() => setOtpModal((prev) => ({ ...prev, isOpen: false }))}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "10px",
+                    backgroundColor: "#F3F4F6",
+                    border: "none",
+                    color: "#374151",
+                    fontWeight: "700",
+                    fontSize: "13px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={otpModal.loading || otpModal.otp.length !== 4}
+                  style={{
+                    flex: 2,
+                    padding: "12px",
+                    borderRadius: "10px",
+                    backgroundColor: (otpModal.loading || otpModal.otp.length !== 4) ? "#9CA3AF" : "#151515",
+                    border: "none",
+                    color: "#FAF7EF",
+                    fontWeight: "800",
+                    fontSize: "13px",
+                    cursor: (otpModal.loading || otpModal.otp.length !== 4) ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                  }}
+                >
+                  {otpModal.loading ? "Verifying..." : "Verify & Complete"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
