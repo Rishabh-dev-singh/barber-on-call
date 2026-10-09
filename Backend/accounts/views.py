@@ -6,7 +6,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User
+import random
+import re
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import status
+from .sms import send_fast2sms_otp
+from .models import PhoneOTP, User
 from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
 from .captcha import generate_captcha
 from .permissions import IsCustomerUser
@@ -26,6 +32,64 @@ class CaptchaGenerateView(APIView):
         })
 
 
+class SendRegistrationOTPView(APIView):
+    """
+    Sends a 4-digit SMS OTP via Fast2SMS to verify customer's phone number during registration.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        raw_phone = request.data.get("phone", "")
+        cleaned_phone = re.sub(r"\D", "", str(raw_phone))[-10:]
+
+        if len(cleaned_phone) != 10:
+            return Response(
+                {"detail": "Please enter a valid 10-digit mobile number."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check if already registered
+        if User.objects.filter(phone=cleaned_phone).exists():
+            return Response(
+                {"detail": "This mobile number is already registered. Please log in directly."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Rate limiting: 30 seconds cooldown between SMS requests
+        now = timezone.now()
+        recent_otp = PhoneOTP.objects.filter(
+            phone=cleaned_phone,
+            created_at__gte=now - timedelta(seconds=30)
+        ).first()
+
+        if recent_otp:
+            return Response(
+                {"detail": "An OTP was just sent. Please wait 30 seconds before requesting another."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        otp = f"{random.randint(1000, 9999)}"
+
+        PhoneOTP.objects.create(
+            phone=cleaned_phone,
+            otp=otp,
+        )
+
+        success, msg = send_fast2sms_otp(cleaned_phone, otp)
+
+        if not success:
+            return Response(
+                {"detail": f"Failed to send SMS OTP: {msg}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response({
+            "success": True,
+            "message": f"OTP sent successfully to +91 {cleaned_phone}.",
+            "phone": cleaned_phone,
+        })
+
+
 class CustomLoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
@@ -35,6 +99,36 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = RefreshToken.for_user(user)
+        refresh["role"] = user.role
+        refresh["username"] = user.username
+        refresh["name"] = user.get_full_name() or user.username
+
+        return Response(
+            {
+                "success": True,
+                "message": "Registration successful!",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "name": user.get_full_name() or user.username,
+                    "phone": user.phone,
+                    "role": user.role,
+                },
+                "tokens": {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class CustomerProfileView(APIView):

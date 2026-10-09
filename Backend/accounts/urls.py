@@ -6,6 +6,7 @@ from .views import (
     CustomerChangePasswordView,
     CustomLoginView,
     CaptchaGenerateView,
+    SendRegistrationOTPView,
 )
 
 from rest_framework_simplejwt.views import (
@@ -14,6 +15,12 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
+
+    path(
+        "send-otp/",
+        SendRegistrationOTPView.as_view(),
+        name="send-otp"
+    ),
 
     path(
         "captcha/",

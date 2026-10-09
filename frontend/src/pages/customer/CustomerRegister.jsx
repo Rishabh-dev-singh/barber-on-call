@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   Scissors,
   Eye,
@@ -13,12 +14,12 @@ import {
   ArrowRight,
   ShieldCheck,
   ChevronLeft,
-  RefreshCw,
 } from "../../components/common/Icons";
 
 function CustomerRegister() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,35 +29,24 @@ function CustomerRegister() {
     confirmPassword: "",
   });
 
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpCooldown, setOtpCooldown] = useState(0);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [captchaQuestion, setCaptchaQuestion] = useState("");
-  const [captchaToken, setCaptchaToken] = useState("");
-  const [captchaAnswer, setCaptchaAnswer] = useState("");
-  const [loadingCaptcha, setLoadingCaptcha] = useState(false);
-
-  const fetchCaptcha = async () => {
-    try {
-      setLoadingCaptcha(true);
-      const res = await fetch(`${API_BASE_URL}/api/accounts/captcha/`);
-      if (res.ok) {
-        const data = await res.json();
-        setCaptchaQuestion(data.question);
-        setCaptchaToken(data.captcha_token);
-        setCaptchaAnswer("");
-      }
-    } catch (err) {
-      console.error("Failed to load captcha:", err);
-    } finally {
-      setLoadingCaptcha(false);
-    }
-  };
-
+  // Countdown timer for OTP cooldown
   useEffect(() => {
-    fetchCaptcha();
-  }, []);
+    if (otpCooldown > 0) {
+      const timer = setTimeout(() => {
+        setOtpCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [otpCooldown]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,6 +54,46 @@ function CustomerRegister() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSendOtp = async () => {
+    const cleaned = formData.mobile.replace(/\D/g, "");
+    if (cleaned.length !== 10) {
+      if (showToast) showToast("Please enter a valid 10-digit mobile number.", "warning");
+      else alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    try {
+      setSendingOtp(true);
+      const res = await fetch(`${API_BASE_URL}/api/accounts/send-otp/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: cleaned }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        const errMsg = data.detail || data.message || "Failed to send OTP.";
+        if (showToast) showToast(errMsg, "error");
+        else alert(errMsg);
+        return;
+      }
+
+      setOtpSent(true);
+      setOtpCooldown(30);
+      if (showToast) {
+        showToast(`OTP sent successfully to +91 ${cleaned}!`, "success");
+      } else {
+        alert(`OTP sent to +91 ${cleaned}`);
+      }
+    } catch (err) {
+      console.error("Error sending OTP:", err);
+      if (showToast) showToast("Network error while sending OTP. Please try again.", "error");
+      else alert("Network error.");
+    } finally {
+      setSendingOtp(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -75,21 +105,34 @@ function CustomerRegister() {
       return;
     }
 
-    if (formData.mobile.length !== 10) {
+    const cleanedMobile = formData.mobile.replace(/\D/g, "");
+    if (cleanedMobile.length !== 10) {
       if (showToast) showToast("Please enter a valid 10-digit mobile number.", "warning");
       else alert("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    if (!otpSent) {
+      if (showToast) showToast("Please click 'Send OTP' to verify your phone number first.", "warning");
+      else alert("Please click 'Send OTP' first.");
+      return;
+    }
+
+    if (!otp.trim() || otp.trim().length !== 4) {
+      if (showToast) showToast("Please enter the 4-digit OTP sent to your phone.", "warning");
+      else alert("Please enter the 4-digit OTP.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      if (showToast) showToast("Password must be at least 6 characters.", "warning");
+      else alert("Password must be at least 6 characters.");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
       if (showToast) showToast("Password and Confirm Password do not match.", "warning");
       else alert("Password and Confirm Password do not match.");
-      return;
-    }
-
-    if (!captchaAnswer.trim()) {
-      if (showToast) showToast("Please answer the security verification question.", "warning");
-      else alert("Please answer the security verification question.");
       return;
     }
 
@@ -103,13 +146,12 @@ function CustomerRegister() {
         },
         body: JSON.stringify({
           name: formData.name.trim(),
-          username: formData.mobile,
-          email: formData.email,
+          username: cleanedMobile,
+          email: formData.email.trim(),
           password: formData.password,
-          phone: formData.mobile,
+          phone: cleanedMobile,
+          otp: otp.trim(),
           role: "customer",
-          captcha_token: captchaToken,
-          captcha_answer: captchaAnswer.trim(),
         }),
       });
 
@@ -126,8 +168,8 @@ function CustomerRegister() {
           errorMsg = data.message;
         } else if (data.non_field_errors && data.non_field_errors.length) {
           errorMsg = data.non_field_errors[0];
-        } else if (data.captcha_answer) {
-          errorMsg = Array.isArray(data.captcha_answer) ? data.captcha_answer[0] : data.captcha_answer;
+        } else if (data.otp) {
+          errorMsg = Array.isArray(data.otp) ? data.otp[0] : data.otp;
         } else if (data.password) {
           errorMsg = Array.isArray(data.password) ? data.password[0] : data.password;
         } else if (data.phone) {
@@ -153,20 +195,36 @@ function CustomerRegister() {
 
         if (showToast) showToast(errorMsg, "error");
         else alert(errorMsg);
-
-        fetchCaptcha();
         return;
       }
 
-      if (showToast) {
-        showToast("Account created successfully! Please login.", "success");
-      } else {
-        alert("Account created successfully! Please login.");
-      }
+      // If tokens returned, auto-login directly
+      if (data.tokens && data.tokens.access) {
+        login({
+          access: data.tokens.access,
+          refresh: data.tokens.refresh,
+          role: "customer",
+          name: data.user.name,
+          username: data.user.username,
+          user_id: data.user.id,
+        });
 
-      setTimeout(() => {
-        navigate("/customer/login");
-      }, 500);
+        if (showToast) {
+          showToast("Account created successfully! Welcome to Barber On Call.", "success");
+        }
+        setTimeout(() => {
+          navigate("/customer/barbers", { replace: true });
+        }, 500);
+      } else {
+        if (showToast) {
+          showToast("Account created successfully! Please login.", "success");
+        } else {
+          alert("Account created successfully! Please login.");
+        }
+        setTimeout(() => {
+          navigate("/customer/login");
+        }, 500);
+      }
     } catch (err) {
       console.error("Registration error:", err);
       if (showToast) {
@@ -174,7 +232,6 @@ function CustomerRegister() {
       } else {
         alert("Server connection error.");
       }
-      fetchCaptcha();
     } finally {
       setLoading(false);
     }
@@ -256,46 +313,145 @@ function CustomerRegister() {
             </div>
           </div>
 
-          {/* Mobile Number */}
+          {/* Mobile Number + Send OTP */}
           <div>
             <label style={{ fontSize: "12px", fontWeight: "700", color: "#151515", display: "block", marginBottom: "5px" }}>
               Mobile Number *
             </label>
-            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-              <div style={{
-                position: "absolute",
-                left: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                color: "#6E6E6E",
-                fontSize: "13px",
-                fontWeight: "600",
-                pointerEvents: "none"
-              }}>
-                <Phone size={14} color="#D4A017" />
-                <span>+91</span>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <div style={{ position: "relative", display: "flex", alignItems: "center", flex: 1 }}>
+                <div style={{
+                  position: "absolute",
+                  left: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  color: "#6E6E6E",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  pointerEvents: "none"
+                }}>
+                  <Phone size={14} color="#D4A017" />
+                  <span>+91</span>
+                </div>
+                <input
+                  type="tel"
+                  name="mobile"
+                  maxLength={10}
+                  placeholder="Enter 10-digit mobile"
+                  value={formData.mobile}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "");
+                    setFormData({ ...formData, mobile: val });
+                    if (otpSent && val !== formData.mobile) {
+                      setOtpSent(false);
+                      setOtp("");
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "11px 14px 11px 64px",
+                    borderRadius: "10px",
+                    border: "1px solid rgba(0, 0, 0, 0.12)",
+                    fontSize: "13.5px",
+                    boxSizing: "border-box",
+                    fontFamily: "inherit"
+                  }}
+                  required
+                />
               </div>
-              <input
-                type="tel"
-                name="mobile"
-                maxLength={10}
-                placeholder="Enter 10-digit mobile"
-                value={formData.mobile}
-                onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, "") })}
-                style={{
-                  width: "100%",
-                  padding: "11px 14px 11px 64px",
-                  borderRadius: "10px",
-                  border: "1px solid rgba(0, 0, 0, 0.12)",
-                  fontSize: "13.5px",
-                  boxSizing: "border-box",
-                  fontFamily: "inherit"
-                }}
-                required
-              />
+
+              {!otpSent && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={formData.mobile.length !== 10 || sendingOtp}
+                  style={{
+                    padding: "11px 14px",
+                    borderRadius: "10px",
+                    backgroundColor: formData.mobile.length === 10 && !sendingOtp ? "#D4A017" : "#E5E7EB",
+                    color: formData.mobile.length === 10 && !sendingOtp ? "#151515" : "#9CA3AF",
+                    fontWeight: "700",
+                    fontSize: "12.5px",
+                    border: "none",
+                    cursor: formData.mobile.length === 10 && !sendingOtp ? "pointer" : "not-allowed",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  {sendingOtp ? "Sending..." : "Send OTP"}
+                </button>
+              )}
             </div>
           </div>
+
+          {/* OTP Verification Box (Shows after OTP is sent) */}
+          {otpSent && (
+            <div style={{
+              backgroundColor: "#F0FDF4",
+              padding: "12px 14px",
+              borderRadius: "12px",
+              border: "1px solid #BBF7D0",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <ShieldCheck size={16} color="#16A34A" />
+                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#166534" }}>
+                    Mobile OTP Verification
+                  </span>
+                </div>
+                <span style={{ fontSize: "11px", color: "#166534" }}>
+                  Sent to +91 {formData.mobile}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={4}
+                  placeholder="Enter 4-digit OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                  style={{
+                    flex: 1,
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #86EFAC",
+                    fontSize: "15px",
+                    fontWeight: "700",
+                    letterSpacing: "4px",
+                    textAlign: "center",
+                    backgroundColor: "#FFFFFF",
+                    boxSizing: "border-box"
+                  }}
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={otpCooldown > 0 || sendingOtp}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #86EFAC",
+                    backgroundColor: otpCooldown > 0 ? "#F3F4F6" : "#DCFCE7",
+                    color: otpCooldown > 0 ? "#6B7280" : "#166534",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    cursor: (otpCooldown > 0 || sendingOtp) ? "not-allowed" : "pointer",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Resend (${otpCooldown}s)` : "Resend OTP"}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Email */}
           <div>
@@ -409,45 +565,6 @@ function CustomerRegister() {
                 {showConfirmPassword ? <EyeOff size={16} color="#6E6E6E" /> : <Eye size={16} color="#6E6E6E" />}
               </button>
             </div>
-          </div>
-
-          {/* Security Captcha Challenge */}
-          <div style={{ backgroundColor: "#FAF7EF", padding: "12px", borderRadius: "10px", border: "1px solid rgba(212, 160, 23, 0.3)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-              <span style={{ fontSize: "11px", fontWeight: "700", color: "#D4A017", textTransform: "uppercase" }}>
-                Security Check
-              </span>
-              <button
-                type="button"
-                onClick={fetchCaptcha}
-                disabled={loadingCaptcha}
-                style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "#6E6E6E" }}
-              >
-                <RefreshCw size={11} className={loadingCaptcha ? "spin-icon" : ""} />
-                <span>Reload</span>
-              </button>
-            </div>
-
-            <div style={{ fontSize: "13px", fontWeight: "700", color: "#151515", marginBottom: "6px" }}>
-              {loadingCaptcha ? "Generating math problem..." : `${captchaQuestion} = ?`}
-            </div>
-
-            <input
-              type="text"
-              placeholder="Your answer"
-              value={captchaAnswer}
-              onChange={(e) => setCaptchaAnswer(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                borderRadius: "8px",
-                border: "1px solid rgba(0,0,0,0.12)",
-                fontSize: "13px",
-                backgroundColor: "#FFFFFF",
-                boxSizing: "border-box"
-              }}
-              required
-            />
           </div>
 
           {/* Submit CTA */}

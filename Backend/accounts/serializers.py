@@ -145,14 +145,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         max_length=15
     )
 
-    captcha_token = serializers.CharField(
+    otp = serializers.CharField(
         write_only=True,
-        required=True
-    )
-
-    captcha_answer = serializers.CharField(
-        write_only=True,
-        required=True
+        required=True,
+        max_length=6
     )
 
     class Meta:
@@ -164,8 +160,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "password",
             "phone",
             "role",
-            "captcha_token",
-            "captcha_answer",
+            "otp",
         ]
 
     def validate_phone(self, value):
@@ -188,12 +183,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        token = attrs.pop("captcha_token", None)
-        answer = attrs.pop("captcha_answer", None)
+        phone = attrs.get("phone")
+        otp = str(attrs.pop("otp", "")).strip()
 
-        is_valid, error_msg = verify_captcha(token, answer)
-        if not is_valid:
-            raise serializers.ValidationError({"captcha_answer": error_msg})
+        from .models import PhoneOTP
+
+        latest_otp = PhoneOTP.objects.filter(phone=phone).order_by("-created_at").first()
+        if not latest_otp or latest_otp.otp != otp:
+            raise serializers.ValidationError({"otp": "Invalid OTP. Please check the 4-digit code sent to your phone."})
+
+        if latest_otp.is_expired():
+            raise serializers.ValidationError({"otp": "OTP has expired. Please request a new OTP."})
+
+        latest_otp.is_verified = True
+        latest_otp.save(update_fields=["is_verified"])
 
         return attrs
 

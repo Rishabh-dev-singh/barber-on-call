@@ -26,7 +26,7 @@ if env_file.exists():
                 k, v = line.split("=", 1)
                 k = k.strip()
                 v = v.strip().strip("'\"")
-                if k:
+                if k: 
                     os.environ[k] = v
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -208,4 +208,14 @@ if not DEBUG:
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "").strip()
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "").strip()
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "").strip()
+
+# Fast2SMS Configuration
+FAST2SMS_API_KEY = os.getenv("FAST2SMS_API_KEY", "").strip()
+
+
+
+
+
+
+
 
