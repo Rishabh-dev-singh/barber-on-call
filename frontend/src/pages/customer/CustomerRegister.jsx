@@ -244,7 +244,7 @@ function CustomerRegister() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "24px 16px",
+      padding: "20px 12px",
       boxSizing: "border-box"
     }}>
       <div style={{
@@ -252,7 +252,7 @@ function CustomerRegister() {
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: "20px",
-        padding: "32px 24px",
+        padding: "28px 18px",
         boxShadow: "0 6px 24px rgba(0, 0, 0, 0.06)",
         border: "1px solid rgba(0, 0, 0, 0.06)",
         boxSizing: "border-box"
@@ -315,11 +315,34 @@ function CustomerRegister() {
 
           {/* Mobile Number + Send OTP */}
           <div>
-            <label style={{ fontSize: "12px", fontWeight: "700", color: "#151515", display: "block", marginBottom: "5px" }}>
-              Mobile Number *
-            </label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "700", color: "#151515" }}>
+                Mobile Number *
+              </label>
+              {otpSent && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOtpSent(false);
+                    setOtp("");
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#D4A017",
+                    fontSize: "11.5px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    padding: 0
+                  }}
+                >
+                  Change Number
+                </button>
+              )}
+            </div>
+
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <div style={{ position: "relative", display: "flex", alignItems: "center", flex: 1 }}>
+              <div style={{ position: "relative", display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
                 <div style={{
                   position: "absolute",
                   left: "12px",
@@ -340,6 +363,7 @@ function CustomerRegister() {
                   maxLength={10}
                   placeholder="Enter 10-digit mobile"
                   value={formData.mobile}
+                  disabled={otpSent}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, "");
                     setFormData({ ...formData, mobile: val });
@@ -355,7 +379,9 @@ function CustomerRegister() {
                     border: "1px solid rgba(0, 0, 0, 0.12)",
                     fontSize: "13.5px",
                     boxSizing: "border-box",
-                    fontFamily: "inherit"
+                    fontFamily: "inherit",
+                    backgroundColor: otpSent ? "#F9FAFB" : "#FFFFFF",
+                    color: otpSent ? "#4B5563" : "#151515",
                   }}
                   required
                 />
@@ -372,10 +398,11 @@ function CustomerRegister() {
                     backgroundColor: formData.mobile.length === 10 && !sendingOtp ? "#D4A017" : "#E5E7EB",
                     color: formData.mobile.length === 10 && !sendingOtp ? "#151515" : "#9CA3AF",
                     fontWeight: "700",
-                    fontSize: "12.5px",
+                    fontSize: "12px",
                     border: "none",
                     cursor: formData.mobile.length === 10 && !sendingOtp ? "pointer" : "not-allowed",
                     whiteSpace: "nowrap",
+                    flexShrink: 0,
                     transition: "all 0.2s ease"
                   }}
                 >
@@ -389,65 +416,74 @@ function CustomerRegister() {
           {otpSent && (
             <div style={{
               backgroundColor: "#F0FDF4",
-              padding: "12px 14px",
+              padding: "14px",
               borderRadius: "12px",
               border: "1px solid #BBF7D0",
               display: "flex",
               flexDirection: "column",
-              gap: "8px"
+              gap: "10px",
+              boxSizing: "border-box"
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "4px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <ShieldCheck size={16} color="#16A34A" />
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#166534" }}>
-                    Mobile OTP Verification
+                  <span style={{ fontSize: "12.5px", fontWeight: "700", color: "#166534" }}>
+                    Enter 4-Digit OTP
                   </span>
                 </div>
-                <span style={{ fontSize: "11px", color: "#166534" }}>
+                <span style={{ fontSize: "11.5px", color: "#166534", fontWeight: "600" }}>
                   Sent to +91 {formData.mobile}
                 </span>
               </div>
 
-              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              {/* Full-width OTP Input (Mobile Friendly) */}
+              <div style={{ width: "100%" }}>
                 <input
                   type="text"
                   inputMode="numeric"
                   maxLength={4}
-                  placeholder="Enter 4-digit OTP"
+                  placeholder="• • • •"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))}
                   style={{
-                    flex: 1,
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    border: "1px solid #86EFAC",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                    letterSpacing: "4px",
+                    width: "100%",
+                    padding: "11px 12px",
+                    borderRadius: "10px",
+                    border: "1.5px solid #86EFAC",
+                    fontSize: "20px",
+                    fontWeight: "800",
+                    letterSpacing: "10px",
                     textAlign: "center",
                     backgroundColor: "#FFFFFF",
-                    boxSizing: "border-box"
+                    boxSizing: "border-box",
+                    outline: "none",
+                    color: "#151515"
                   }}
                   required
                 />
+              </div>
 
+              {/* Resend Action Row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "2px" }}>
+                <span style={{ fontSize: "11.5px", color: "#4B5563" }}>
+                  Didn't receive code?
+                </span>
                 <button
                   type="button"
                   onClick={handleSendOtp}
                   disabled={otpCooldown > 0 || sendingOtp}
                   style={{
-                    padding: "10px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid #86EFAC",
-                    backgroundColor: otpCooldown > 0 ? "#F3F4F6" : "#DCFCE7",
-                    color: otpCooldown > 0 ? "#6B7280" : "#166534",
+                    background: "none",
+                    border: "none",
+                    color: otpCooldown > 0 ? "#6B7280" : "#16A34A",
                     fontSize: "12px",
                     fontWeight: "700",
                     cursor: (otpCooldown > 0 || sendingOtp) ? "not-allowed" : "pointer",
-                    whiteSpace: "nowrap"
+                    padding: "2px 4px",
+                    textDecoration: otpCooldown > 0 ? "none" : "underline"
                   }}
                 >
-                  {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Resend (${otpCooldown}s)` : "Resend OTP"}
+                  {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Resend in ${otpCooldown}s` : "Resend OTP"}
                 </button>
               </div>
             </div>
