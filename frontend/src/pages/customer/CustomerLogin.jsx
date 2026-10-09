@@ -58,6 +58,76 @@ function CustomerLogin() {
     }
   }, [forgotModal.timer]);
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!mobile || !password) {
+      if (showToast) {
+        showToast("Please enter mobile number and password.", "warning");
+      } else {
+        alert("Please enter mobile number and password.");
+      }
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${API_BASE_URL}/api/accounts/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: mobile.trim(),
+          password: password,
+          role: "customer",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errMsg = data.detail || "Invalid mobile number or password.";
+        if (showToast) {
+          showToast(errMsg, "error");
+        } else {
+          alert(errMsg);
+        }
+        return;
+      }
+
+      // Save tokens in unified AuthContext
+      login({
+        access: data.access,
+        refresh: data.refresh,
+        role: "customer",
+        name: data.name,
+        username: data.username,
+        user_id: data.user_id,
+      });
+
+      if (showToast) {
+        showToast("Welcome back! Login successful.", "success");
+      }
+
+      const redirectTo = location.state?.from?.pathname || "/customer/barbers";
+      setTimeout(() => {
+        navigate(redirectTo, { replace: true });
+      }, 400);
+
+    } catch (error) {
+      console.error("Login Error:", error);
+      if (showToast) {
+        showToast("Unable to connect to server.", "error");
+      } else {
+        alert("Unable to connect to server.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleForgotSendOtp = async (e) => {
     if (e) e.preventDefault();
     const cleanPhone = forgotModal.mobile.replace(/\D/g, "");
