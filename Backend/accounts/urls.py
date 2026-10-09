@@ -7,6 +7,8 @@ from .views import (
     CustomLoginView,
     CaptchaGenerateView,
     SendRegistrationOTPView,
+    ForgotPasswordSendOTPView,
+    ForgotPasswordResetView,
 )
 
 from rest_framework_simplejwt.views import (
@@ -20,6 +22,18 @@ urlpatterns = [
         "send-otp/",
         SendRegistrationOTPView.as_view(),
         name="send-otp"
+    ),
+
+    path(
+        "forgot-password/send-otp/",
+        ForgotPasswordSendOTPView.as_view(),
+        name="forgot-password-send-otp"
+    ),
+
+    path(
+        "forgot-password/reset/",
+        ForgotPasswordResetView.as_view(),
+        name="forgot-password-reset"
     ),
 
     path(

@@ -85,3 +85,4 @@ def send_fast2sms_otp(phone, otp):
     except Exception as e:
         logger.error(f"Fast2SMS network error: {e}")
         return False, "Failed to connect to SMS gateway. Please try again."
+

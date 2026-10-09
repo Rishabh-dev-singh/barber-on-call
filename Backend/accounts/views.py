@@ -1,5 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import models
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -87,6 +88,157 @@ class SendRegistrationOTPView(APIView):
             "success": True,
             "message": f"OTP sent successfully to +91 {cleaned_phone}.",
             "phone": cleaned_phone,
+        })
+
+
+class ForgotPasswordSendOTPView(APIView):
+    """
+    Sends a 4-digit SMS OTP via Fast2SMS to verify customer identity for password reset.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        raw_phone = request.data.get("phone", "")
+        cleaned_phone = re.sub(r"\D", "", str(raw_phone))[-10:]
+
+        if len(cleaned_phone) != 10:
+            return Response(
+                {"detail": "Please enter a valid 10-digit mobile number."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check if user exists
+        user = User.objects.filter(
+            models.Q(phone=cleaned_phone) |
+            models.Q(phone=f"+91{cleaned_phone}") |
+            models.Q(username=cleaned_phone)
+        ).first()
+
+        if not user:
+            return Response(
+                {"detail": "No registered account found with this mobile number. Please check the number or create an account."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Rate limiting: 30 seconds cooldown
+        now = timezone.now()
+        recent_otp = PhoneOTP.objects.filter(
+            phone=cleaned_phone,
+            created_at__gte=now - timedelta(seconds=30)
+        ).first()
+
+        if recent_otp:
+            return Response(
+                {"detail": "An OTP was just sent. Please wait 30 seconds before requesting another."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        otp = f"{random.randint(1000, 9999)}"
+
+        PhoneOTP.objects.create(
+            phone=cleaned_phone,
+            otp=otp,
+        )
+
+        success, msg = send_fast2sms_otp(cleaned_phone, otp)
+
+        if not success:
+            return Response(
+                {"detail": f"Failed to send SMS OTP: {msg}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response({
+            "success": True,
+            "message": f"Password reset OTP sent successfully to +91 {cleaned_phone}.",
+            "phone": cleaned_phone,
+        })
+
+
+class ForgotPasswordResetView(APIView):
+    """
+    Verifies the 4-digit SMS OTP and resets the customer password.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        raw_phone = request.data.get("phone", "")
+        cleaned_phone = re.sub(r"\D", "", str(raw_phone))[-10:]
+        otp = str(request.data.get("otp", "")).strip()
+        new_password = str(request.data.get("new_password", "")).strip()
+        confirm_password = str(request.data.get("confirm_password", "")).strip()
+
+        if len(cleaned_phone) != 10:
+            return Response(
+                {"detail": "Please enter a valid 10-digit mobile number."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not otp or len(otp) != 4:
+            return Response(
+                {"detail": "Please enter the 4-digit OTP sent to your mobile."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not new_password or len(new_password) < 6:
+            return Response(
+                {"detail": "New password must be at least 6 characters long."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if new_password != confirm_password:
+            return Response(
+                {"detail": "New password and Confirm password do not match."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.filter(
+            models.Q(phone=cleaned_phone) |
+            models.Q(phone=f"+91{cleaned_phone}") |
+            models.Q(username=cleaned_phone)
+        ).first()
+
+        if not user:
+            return Response(
+                {"detail": "Account not found for this mobile number."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        latest_otp = PhoneOTP.objects.filter(phone=cleaned_phone).order_by("-created_at").first()
+
+        if not latest_otp or latest_otp.otp != otp:
+            return Response(
+                {"detail": "Invalid OTP. Please check the 4-digit code sent to your phone."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if latest_otp.is_expired():
+            return Response(
+                {"detail": "OTP has expired. Please request a new OTP."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate password strength
+        try:
+            validate_password(new_password, user)
+        except DjangoValidationError as e:
+            return Response(
+                {"detail": " ".join(e.messages)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Set and save new password
+        user.set_password(new_password)
+        user.must_change_password = False
+        user.save()
+
+        # Mark OTP as verified
+        latest_otp.is_verified = True
+        latest_otp.save(update_fields=["is_verified"])
+
+        return Response({
+            "success": True,
+            "message": "Password reset successfully! Please log in with your new password.",
         })
 
 
