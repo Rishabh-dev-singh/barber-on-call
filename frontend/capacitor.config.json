@@ -3,8 +3,6 @@
   "appName": "Barber On Call",
   "webDir": "dist",
   "server": {
-    "androidScheme": "http",
-    "cleartext": true
+    "androidScheme": "https"
   }
 }
-

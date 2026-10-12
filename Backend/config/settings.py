@@ -159,16 +159,27 @@ AUTH_USER_MODEL = "accounts.User"
 
 # CORS
 
+DEFAULT_MOBILE_ORIGINS = [
+    "https://localhost",
+    "http://localhost",
+    "capacitor://localhost",
+]
+
 raw_cors = os.getenv('CORS_ALLOWED_ORIGINS', '')
 if raw_cors:
-    CORS_ALLOWED_ORIGINS = [
+    parsed_origins = [
         origin.strip()
         for origin in raw_cors.split(',')
         if origin.strip()
     ]
+    CORS_ALLOWED_ORIGINS = list(set(parsed_origins + DEFAULT_MOBILE_ORIGINS))
     CORS_ALLOW_ALL_ORIGINS = False
 else:
     CORS_ALLOW_ALL_ORIGINS = DEBUG
+    if not DEBUG:
+        CORS_ALLOWED_ORIGINS = DEFAULT_MOBILE_ORIGINS
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Django REST Framework
