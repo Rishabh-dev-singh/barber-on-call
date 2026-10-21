@@ -28,7 +28,8 @@ export default function BottomNav() {
   if (
     hiddenRoutes.includes(location.pathname) ||
     location.pathname.startsWith("/customer/barber/") ||
-    location.pathname.startsWith("/customer/booking")
+    location.pathname.startsWith("/customer/booking") ||
+    location.pathname.startsWith("/customer/category")
   ) {
     return null;
   }

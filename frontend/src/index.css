@@ -101,3 +101,15 @@ a:active,
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Luxury animations */
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 28px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}

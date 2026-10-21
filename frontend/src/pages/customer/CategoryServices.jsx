@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Star,
   MapPin,
+  Tag,
 } from "../../components/common/Icons";
 import Skeleton from "../../components/ui/Skeleton";
 
@@ -21,9 +22,10 @@ const CATEGORY_META = {
     id: "boys",
     title: "For Men & Boys",
     subtitle: "Precision haircuts, beard grooming, head massage & sharp styling",
-    badge: "Gents Grooming",
+    badge: "Gentlemen's Grooming Lounge",
     accentColor: "#D4A017",
-    bgGradient: "linear-gradient(135deg, #151515 0%, #2A2A2A 100%)",
+    accentBg: "rgba(212, 160, 23, 0.15)",
+    bgGradient: "linear-gradient(135deg, #18181B 0%, #27272A 100%)",
     subcategories: [
       { id: "all", label: "All Services" },
       { id: "haircut", label: "Haircut & Styling" },
@@ -36,9 +38,10 @@ const CATEGORY_META = {
     id: "girls",
     title: "For Women & Girls",
     subtitle: "Skin care, hair spa, manicure, pedicure, party makeup & saree draping",
-    badge: "Ladies Beauty & Salon",
+    badge: "Ladies Beauty & Wellness Lounge",
     accentColor: "#E11D48",
-    bgGradient: "linear-gradient(135deg, #2A101C 0%, #4A122E 100%)",
+    accentBg: "rgba(225, 29, 72, 0.18)",
+    bgGradient: "linear-gradient(135deg, #240D18 0%, #43122B 100%)",
     subcategories: [
       { id: "all", label: "All Services" },
       { id: "skin_care", label: "Skin Care" },
@@ -53,7 +56,8 @@ const CATEGORY_META = {
     subtitle: "Pre-Bridal grooming packages (3-7 days before) & Function-day bridal styling",
     badge: "Royal Wedding Experience",
     accentColor: "#F59E0B",
-    bgGradient: "linear-gradient(135deg, #3B1218 0%, #5B1B27 100%)",
+    accentBg: "rgba(245, 158, 11, 0.2)",
+    bgGradient: "linear-gradient(135deg, #360F17 0%, #561A26 100%)",
     subcategories: [
       { id: "all", label: "All Wedding Services" },
       { id: "pre_bridal", label: "Pre-Bridal (3-7 Days Before)" },
@@ -131,41 +135,71 @@ function CategoryServices() {
   };
 
   return (
-    <div style={{ maxWidth: "480px", margin: "0 auto", padding: "16px 16px 90px 16px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div style={{
+      maxWidth: "480px",
+      margin: "0 auto",
+      padding: "16px 16px 140px 16px", // Generous bottom space so floating bar NEVER overlaps content
+      boxSizing: "border-box",
+      display: "flex",
+      flexDirection: "column",
+      gap: "16px",
+      minHeight: "100vh",
+      backgroundColor: "#FAF7EF"
+    }}>
       
-      {/* Top Navigation */}
+      {/* Top Navigation Bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <button
           type="button"
           onClick={() => navigate("/customer/dashboard")}
           style={{
-            background: "none",
-            border: "none",
+            background: "#FFFFFF",
+            border: "1px solid rgba(0,0,0,0.08)",
+            borderRadius: "20px",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: "4px",
+            gap: "5px",
             color: "#151515",
-            fontSize: "13px",
-            fontWeight: "700",
-            padding: 0
+            fontSize: "12.5px",
+            fontWeight: "750",
+            padding: "6px 12px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.04)"
           }}
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={16} />
           <span>Dashboard</span>
         </button>
 
-        <span style={{ fontSize: "12px", fontWeight: "700", color: "#6E6E6E" }}>
-          Segment Menu
+        <span style={{
+          fontSize: "11px",
+          fontWeight: "800",
+          color: catConfig.accentColor,
+          textTransform: "uppercase",
+          backgroundColor: catConfig.accentBg,
+          padding: "4px 10px",
+          borderRadius: "12px",
+          border: `1px solid ${catConfig.accentColor}33`
+        }}>
+          {catConfig.badge}
         </span>
       </div>
 
-      {/* Segment Switcher Pills */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px" }}>
+      {/* Segment Switcher Pills (Sticky and Sleek) */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "6px",
+        backgroundColor: "#FFFFFF",
+        padding: "5px",
+        borderRadius: "14px",
+        border: "1px solid rgba(0,0,0,0.06)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+      }}>
         {[
-          { id: "boys", label: "For Boys", color: "#D4A017" },
-          { id: "girls", label: "For Girls", color: "#E11D48" },
-          { id: "marriage", label: "Marriage", color: "#F59E0B" },
+          { id: "boys", label: "For Boys", color: "#D4A017", icon: "👨" },
+          { id: "girls", label: "For Girls", color: "#E11D48", icon: "👩" },
+          { id: "marriage", label: "Marriage", color: "#F59E0B", icon: "👑" },
         ].map((tab) => {
           const isActive = activeCategory === tab.id;
           return (
@@ -177,20 +211,25 @@ function CategoryServices() {
                 setSelectedServices([]);
               }}
               style={{
-                padding: "8px 4px",
+                padding: "9px 4px",
                 borderRadius: "10px",
-                border: isActive ? `1.5px solid ${tab.color}` : "1px solid rgba(0,0,0,0.08)",
-                backgroundColor: isActive ? "#151515" : "#FFFFFF",
-                color: isActive ? "#FAF7EF" : "#4B5563",
+                border: "none",
+                backgroundColor: isActive ? "#151515" : "transparent",
+                color: isActive ? "#FAF7EF" : "#6E6E6E",
                 fontSize: "12px",
-                fontWeight: "750",
+                fontWeight: "800",
                 cursor: "pointer",
                 textAlign: "center",
-                transition: "all 0.15s ease",
-                boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5px",
+                transition: "all 0.2s ease",
+                boxShadow: isActive ? "0 4px 12px rgba(0,0,0,0.15)" : "none"
               }}
             >
-              {tab.label}
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
             </button>
           );
         })}
@@ -199,42 +238,61 @@ function CategoryServices() {
       {/* Hero Category Banner */}
       <div style={{
         background: catConfig.bgGradient,
-        borderRadius: "18px",
-        padding: "20px",
+        borderRadius: "20px",
+        padding: "22px 20px",
         color: "#FAF7EF",
-        border: `1px solid ${catConfig.accentColor}44`,
-        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12)",
+        border: `1px solid ${catConfig.accentColor}55`,
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
         display: "flex",
         flexDirection: "column",
-        gap: "8px"
+        gap: "8px",
+        position: "relative",
+        overflow: "hidden"
       }}>
+        {/* Glow Accent Circle Background */}
+        <div style={{
+          position: "absolute",
+          top: "-30px",
+          right: "-30px",
+          width: "120px",
+          height: "120px",
+          borderRadius: "50%",
+          backgroundColor: catConfig.accentColor,
+          opacity: 0.15,
+          filter: "blur(20px)",
+          pointerEvents: "none"
+        }} />
+
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{
-            fontSize: "10.5px",
+            fontSize: "11px",
             fontWeight: "800",
             color: catConfig.accentColor,
             textTransform: "uppercase",
-            letterSpacing: "0.5px",
-            backgroundColor: "rgba(255,255,255,0.1)",
-            padding: "2px 8px",
-            borderRadius: "6px"
+            letterSpacing: "0.5px"
           }}>
-            {catConfig.badge}
+            Verified Specialists • Doorstep & Salon
           </span>
-          <Sparkles size={16} color={catConfig.accentColor} />
+          <Sparkles size={18} color={catConfig.accentColor} />
         </div>
 
-        <h1 style={{ fontSize: "22px", fontWeight: "850", margin: 0, letterSpacing: "-0.3px", color: "#FAF7EF" }}>
+        <h1 style={{ fontSize: "24px", fontWeight: "900", margin: 0, letterSpacing: "-0.4px", color: "#FAF7EF" }}>
           {catConfig.title}
         </h1>
 
-        <p style={{ margin: 0, fontSize: "12px", color: "rgba(250, 247, 239, 0.8)", lineHeight: "1.4" }}>
+        <p style={{ margin: 0, fontSize: "12.5px", color: "rgba(250, 247, 239, 0.8)", lineHeight: "1.45" }}>
           {catConfig.subtitle}
         </p>
       </div>
 
       {/* Subcategory Filter Tabs */}
-      <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "4px" }}>
+      <div style={{
+        display: "flex",
+        gap: "6px",
+        overflowX: "auto",
+        paddingBottom: "4px",
+        scrollbarWidth: "none"
+      }}>
         {catConfig.subcategories.map((sub) => {
           const isActive = activeSubcategory === sub.id;
           return (
@@ -243,16 +301,16 @@ function CategoryServices() {
               type="button"
               onClick={() => setActiveSubcategory(sub.id)}
               style={{
-                padding: "6px 12px",
-                borderRadius: "20px",
-                fontSize: "11.5px",
+                padding: "8px 14px",
+                borderRadius: "25px",
+                fontSize: "12px",
                 fontWeight: "750",
-                border: "none",
+                border: isActive ? `1.5px solid ${catConfig.accentColor}` : "1px solid rgba(0,0,0,0.08)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 backgroundColor: isActive ? "#151515" : "#FFFFFF",
                 color: isActive ? "#FAF7EF" : "#4B5563",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.12)" : "0 1px 3px rgba(0,0,0,0.03)",
                 transition: "all 0.15s ease",
               }}
             >
@@ -265,18 +323,18 @@ function CategoryServices() {
       {/* Services Cards List */}
       {loading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <Skeleton variant="card" height="120px" />
-          <Skeleton variant="card" height="120px" />
-          <Skeleton variant="card" height="120px" />
+          <Skeleton variant="card" height="130px" />
+          <Skeleton variant="card" height="130px" />
+          <Skeleton variant="card" height="130px" />
         </div>
       ) : filteredServices.length === 0 ? (
-        <div style={{ backgroundColor: "#FFFFFF", padding: "24px", borderRadius: "14px", textAlign: "center", border: "1px solid rgba(0,0,0,0.06)" }}>
+        <div style={{ backgroundColor: "#FFFFFF", padding: "28px", borderRadius: "16px", textAlign: "center", border: "1px solid rgba(0,0,0,0.06)" }}>
           <p style={{ margin: 0, fontSize: "13px", color: "#6E6E6E" }}>
             No services found under this subcategory.
           </p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {filteredServices.map((srv) => {
             const isSelected = selectedServices.some((s) => s.template_id === srv.template_id);
 
@@ -285,29 +343,29 @@ function CategoryServices() {
                 key={srv.template_id}
                 style={{
                   backgroundColor: "#FFFFFF",
-                  borderRadius: "16px",
+                  borderRadius: "18px",
                   padding: "16px",
                   border: isSelected
-                    ? `1.5px solid ${catConfig.accentColor}`
-                    : "1px solid rgba(0, 0, 0, 0.07)",
+                    ? `2px solid ${catConfig.accentColor}`
+                    : "1px solid rgba(0, 0, 0, 0.08)",
                   boxShadow: isSelected
-                    ? `0 4px 14px ${catConfig.accentColor}22`
-                    : "0 2px 6px rgba(0, 0, 0, 0.03)",
+                    ? `0 6px 18px ${catConfig.accentColor}26`
+                    : "0 2px 8px rgba(0, 0, 0, 0.03)",
                   display: "flex",
                   flexDirection: "column",
                   gap: "10px",
-                  transition: "all 0.15s ease",
+                  transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px" }}>
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "4px" }}>
                       <span style={{
                         fontSize: "10px",
                         fontWeight: "800",
                         textTransform: "uppercase",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
+                        padding: "2px 7px",
+                        borderRadius: "6px",
                         backgroundColor: "#F3F4F6",
                         color: "#4B5563"
                       }}>
@@ -319,15 +377,15 @@ function CategoryServices() {
                           fontWeight: "800",
                           backgroundColor: "#FEF3C7",
                           color: "#B45309",
-                          padding: "2px 6px",
-                          borderRadius: "4px"
+                          padding: "2px 7px",
+                          borderRadius: "6px"
                         }}>
-                          ★ Popular
+                          ★ Popular Choice
                         </span>
                       )}
                     </div>
 
-                    <h3 style={{ fontSize: "15.5px", fontWeight: "800", color: "#151515", margin: 0 }}>
+                    <h3 style={{ fontSize: "16px", fontWeight: "850", color: "#151515", margin: 0, letterSpacing: "-0.2px" }}>
                       {srv.name}
                     </h3>
 
@@ -336,28 +394,29 @@ function CategoryServices() {
                     </p>
                   </div>
 
+                  {/* Add / Added Button */}
                   <button
                     type="button"
                     onClick={() => toggleSelectService(srv)}
                     style={{
-                      padding: "7px 12px",
-                      borderRadius: "8px",
+                      padding: "8px 14px",
+                      borderRadius: "10px",
                       border: "none",
                       backgroundColor: isSelected ? "#151515" : catConfig.accentColor,
                       color: isSelected ? "#FAF7EF" : "#151515",
-                      fontSize: "12px",
-                      fontWeight: "800",
+                      fontSize: "12.5px",
+                      fontWeight: "850",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       gap: "4px",
                       flexShrink: 0,
-                      boxShadow: isSelected ? "none" : `0 2px 8px ${catConfig.accentColor}44`,
-                      transition: "transform 0.1s ease"
+                      boxShadow: isSelected ? "none" : `0 3px 10px ${catConfig.accentColor}55`,
+                      transition: "transform 0.15s ease"
                     }}
                   >
-                    {isSelected ? <Check size={13} color="#FAF7EF" /> : <Plus size={13} color="#151515" />}
-                    <span>{isSelected ? "Added" : "Add"}</span>
+                    {isSelected ? <Check size={14} color="#FAF7EF" /> : <Plus size={14} color="#151515" />}
+                    <span>{isSelected ? "Added" : "+ Add"}</span>
                   </button>
                 </div>
 
@@ -365,15 +424,16 @@ function CategoryServices() {
                 {srv.highlights && srv.highlights.length > 0 && (
                   <div style={{
                     backgroundColor: "#F9FAFB",
-                    borderRadius: "10px",
-                    padding: "8px 10px",
+                    borderRadius: "12px",
+                    padding: "9px 12px",
                     display: "flex",
                     flexDirection: "column",
                     gap: "4px",
+                    border: "1px solid rgba(0,0,0,0.03)"
                   }}>
                     {srv.highlights.map((h, idx) => (
-                      <div key={idx} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#4B5563" }}>
-                        <span style={{ color: catConfig.accentColor, fontWeight: "900" }}>✓</span>
+                      <div key={idx} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11.5px", color: "#374151" }}>
+                        <span style={{ color: catConfig.accentColor, fontWeight: "900", fontSize: "13px" }}>✓</span>
                         <span>{h}</span>
                       </div>
                     ))}
@@ -381,21 +441,27 @@ function CategoryServices() {
                 )}
 
                 {/* Footer Price & Duration */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "6px", borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingTop: "8px",
+                  borderTop: "1px solid rgba(0,0,0,0.05)"
+                }}>
                   <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                    <span style={{ fontSize: "11px", color: "#6E6E6E" }}>Starts from</span>
-                    <span style={{ fontSize: "15px", fontWeight: "850", color: "#151515" }}>
+                    <span style={{ fontSize: "11px", color: "#6E6E6E", fontWeight: "600" }}>Starting</span>
+                    <span style={{ fontSize: "16px", fontWeight: "900", color: "#151515" }}>
                       ₹{srv.starting_shop_price || srv.default_shop_price}
                     </span>
                     {srv.starting_home_price && (
-                      <span style={{ fontSize: "11px", color: "#92400E" }}>
-                        (Home: ₹{srv.starting_home_price})
+                      <span style={{ fontSize: "11.5px", color: "#92400E", fontWeight: "700" }}>
+                        • Home: ₹{srv.starting_home_price}
                       </span>
                     )}
                   </div>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: "3px", fontSize: "11.5px", color: "#6E6E6E" }}>
-                    <Clock size={12} color="#6E6E6E" />
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11.5px", color: "#6E6E6E", fontWeight: "600" }}>
+                    <Clock size={13} color="#6E6E6E" />
                     <span>{srv.duration} mins</span>
                   </div>
                 </div>
@@ -405,33 +471,47 @@ function CategoryServices() {
         </div>
       )}
 
-      {/* ================= FLOATING CART & BOOKING BAR ================= */}
+      {/* ================= FIXED LUXURY CART BAR (NEVER OVERLAPPED) ================= */}
       {selectedServices.length > 0 && (
         <div style={{
           position: "fixed",
-          bottom: "16px",
+          bottom: "max(18px, env(safe-area-inset-bottom, 18px))",
           left: "50%",
           transform: "translateX(-50%)",
           width: "calc(100% - 32px)",
           maxWidth: "448px",
           backgroundColor: "#151515",
-          borderRadius: "16px",
-          padding: "12px 16px",
+          borderRadius: "18px",
+          padding: "14px 18px",
           color: "#FAF7EF",
-          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)",
+          boxShadow: "0 12px 36px rgba(0, 0, 0, 0.45)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          zIndex: 90,
-          border: `1.5px solid ${catConfig.accentColor}`,
+          zIndex: 1001, // HIGHER than any header or bottom nav
+          border: `2px solid ${catConfig.accentColor}`,
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          animation: "slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
         }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <span style={{ fontSize: "11px", fontWeight: "700", color: catConfig.accentColor, textTransform: "uppercase" }}>
-                {selectedServices.length} {selectedServices.length === 1 ? "Service" : "Services"} Selected
+              <span style={{
+                fontSize: "10.5px",
+                fontWeight: "800",
+                color: "#151515",
+                backgroundColor: catConfig.accentColor,
+                padding: "2px 7px",
+                borderRadius: "10px",
+                textTransform: "uppercase"
+              }}>
+                {selectedServices.length} {selectedServices.length === 1 ? "Item" : "Items"}
+              </span>
+              <span style={{ fontSize: "11px", color: "rgba(250,247,239,0.7)" }}>
+                Selected
               </span>
             </div>
-            <div style={{ fontSize: "16px", fontWeight: "850", color: "#FAF7EF" }}>
+            <div style={{ fontSize: "18px", fontWeight: "900", color: "#FAF7EF", marginTop: "2px" }}>
               Est. ₹{totalEstimatedPrice}
             </div>
           </div>
@@ -443,19 +523,20 @@ function CategoryServices() {
               backgroundColor: catConfig.accentColor,
               color: "#151515",
               border: "none",
-              padding: "10px 16px",
-              borderRadius: "10px",
-              fontSize: "13px",
-              fontWeight: "800",
+              padding: "11px 18px",
+              borderRadius: "12px",
+              fontSize: "13.5px",
+              fontWeight: "900",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: "6px",
-              boxShadow: `0 2px 10px ${catConfig.accentColor}66`,
+              gap: "7px",
+              boxShadow: `0 4px 16px ${catConfig.accentColor}88`,
+              transition: "transform 0.15s ease",
             }}
           >
             <span>Choose Specialist</span>
-            <ArrowRight size={14} color="#151515" />
+            <ArrowRight size={15} color="#151515" />
           </button>
         </div>
       )}
