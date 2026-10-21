@@ -237,6 +237,211 @@ function CustomerDashboard() {
         </div>
       )}
 
+      {/* ================= 3 PRIMARY CATEGORY OPTION CARDS ================= */}
+      <section>
+        <div style={{ marginBottom: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <Sparkles size={16} color="#D4A017" />
+            <h2 style={{ fontSize: "16px", fontWeight: "800", color: "#151515", margin: 0 }}>
+              Select Grooming Category
+            </h2>
+          </div>
+          <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#6E6E6E" }}>
+            Tailored salon services for men, women and weddings
+          </p>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          
+          {/* 1. For Boys & Men */}
+          <Link
+            to="/customer/category/boys"
+            style={{
+              background: "linear-gradient(135deg, #18181B 0%, #27272A 100%)",
+              borderRadius: "16px",
+              padding: "16px",
+              textDecoration: "none",
+              color: "#FAF7EF",
+              border: "1px solid rgba(212, 160, 23, 0.35)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              transition: "transform 0.15s ease"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                backgroundColor: "rgba(212, 160, 23, 0.15)",
+                border: "1px solid rgba(212, 160, 23, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0
+              }}>
+                <Scissors size={24} color="#D4A017" />
+              </div>
+
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: "800", color: "#D4A017", textTransform: "uppercase", backgroundColor: "rgba(212,160,23,0.15)", padding: "1px 6px", borderRadius: "4px" }}>
+                    Gents Salon
+                  </span>
+                </div>
+                <h3 style={{ fontSize: "16px", fontWeight: "800", margin: "2px 0 2px 0", color: "#FAF7EF" }}>
+                  For Boys & Men
+                </h3>
+                <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(250, 247, 239, 0.7)" }}>
+                  Hair cutting, beard grooming & massage
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(212, 160, 23, 0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0
+            }}>
+              <ArrowRight size={16} color="#D4A017" />
+            </div>
+          </Link>
+
+          {/* 2. For Girls & Women */}
+          <Link
+            to="/customer/category/girls"
+            style={{
+              background: "linear-gradient(135deg, #2A101C 0%, #4A122E 100%)",
+              borderRadius: "16px",
+              padding: "16px",
+              textDecoration: "none",
+              color: "#FAF7EF",
+              border: "1px solid rgba(225, 29, 72, 0.35)",
+              boxShadow: "0 4px 12px rgba(225, 29, 72, 0.1)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              transition: "transform 0.15s ease"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                backgroundColor: "rgba(225, 29, 72, 0.2)",
+                border: "1px solid rgba(225, 29, 72, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0
+              }}>
+                <Sparkles size={24} color="#FDA4AF" />
+              </div>
+
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: "800", color: "#FDA4AF", textTransform: "uppercase", backgroundColor: "rgba(225,29,72,0.25)", padding: "1px 6px", borderRadius: "4px" }}>
+                    Ladies Beauty & Spa
+                  </span>
+                </div>
+                <h3 style={{ fontSize: "16px", fontWeight: "800", margin: "2px 0 2px 0", color: "#FAF7EF" }}>
+                  For Girls & Women
+                </h3>
+                <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(250, 247, 239, 0.75)" }}>
+                  Skin Care, Hair Spa, Nails & Makeup
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(225, 29, 72, 0.25)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0
+            }}>
+              <ArrowRight size={16} color="#FDA4AF" />
+            </div>
+          </Link>
+
+          {/* 3. Marriage Special */}
+          <Link
+            to="/customer/category/marriage"
+            style={{
+              background: "linear-gradient(135deg, #3B1218 0%, #5B1B27 100%)",
+              borderRadius: "16px",
+              padding: "16px",
+              textDecoration: "none",
+              color: "#FAF7EF",
+              border: "1px solid rgba(245, 158, 11, 0.4)",
+              boxShadow: "0 4px 12px rgba(245, 158, 11, 0.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              transition: "transform 0.15s ease"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                backgroundColor: "rgba(245, 158, 11, 0.2)",
+                border: "1px solid rgba(245, 158, 11, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0
+              }}>
+                <Sparkles size={24} color="#FBBF24" />
+              </div>
+
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: "800", color: "#FBBF24", textTransform: "uppercase", backgroundColor: "rgba(245,158,11,0.25)", padding: "1px 6px", borderRadius: "4px" }}>
+                    Royal Wedding
+                  </span>
+                </div>
+                <h3 style={{ fontSize: "16px", fontWeight: "800", margin: "2px 0 2px 0", color: "#FAF7EF" }}>
+                  Marriage Special
+                </h3>
+                <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(250, 247, 239, 0.75)" }}>
+                  Pre-Bridal (3-7 days) & Event-Day Styling
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(245, 158, 11, 0.25)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0
+            }}>
+              <ArrowRight size={16} color="#FBBF24" />
+            </div>
+          </Link>
+
+        </div>
+      </section>
+
       {/* ================= SERVICE TYPE SELECTION ================= */}
       <section>
         <div style={{ marginBottom: "12px" }}>

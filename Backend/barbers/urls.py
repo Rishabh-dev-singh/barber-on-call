@@ -13,10 +13,22 @@ from .views import (
     BarberBookedSlotsView,
     BarberReviewListCreateView,
     BarberChangePasswordView,
+    ServiceCatalogView,
+    BarberAddCatalogServiceView,
 )
 
 
 urlpatterns = [
+    path(
+        "catalog/",
+        ServiceCatalogView.as_view(),
+        name="service-catalog"
+    ),
+    path(
+        "services/add-catalog/",
+        BarberAddCatalogServiceView.as_view(),
+        name="barber-add-catalog-service"
+    ),
     path(
         "change-password/",
         BarberChangePasswordView.as_view(),

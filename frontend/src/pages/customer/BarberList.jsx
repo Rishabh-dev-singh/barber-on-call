@@ -33,11 +33,13 @@ function BarberList() {
   const initialType = searchParams.get("type") || "all";
   const initialSearch = searchParams.get("search") || "";
   const initialFilter = searchParams.get("filter") || "";
+  const initialCategory = searchParams.get("category") || searchParams.get("selected_category") || "all";
+  const servicesListParam = searchParams.get("services_list") || "";
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [serviceType, setServiceType] = useState(initialType);
   const [filterMode, setFilterMode] = useState(initialFilter === "favorites" ? "favorites" : "all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState("recommended");
 
@@ -165,6 +167,7 @@ function BarberList() {
             homeService: barber.home_service_enabled !== false,
             shopService: barber.shop_service_enabled !== false,
             category: barber.category || "standard",
+            serviceFor: barber.service_for || "men",
             providesChairMirror: barber.provides_chair_mirror === true,
             latitude: barber.latitude,
             longitude: barber.longitude,
@@ -247,8 +250,29 @@ function BarberList() {
       result = result.filter((b) => b.rating >= minRating);
     }
 
-    // Premium / Chair & Mirror equipment filter
-    if (categoryFilter === "premium") {
+    // Segment / Category filter: boys, girls, marriage, premium
+    if (categoryFilter === "boys") {
+      result = result.filter(
+        (b) =>
+          b.serviceFor === "men" ||
+          b.serviceFor === "unisex" ||
+          (b.services && b.services.some((s) => s.main_category === "boys"))
+      );
+    } else if (categoryFilter === "girls") {
+      result = result.filter(
+        (b) =>
+          b.serviceFor === "women" ||
+          b.serviceFor === "unisex" ||
+          (b.services && b.services.some((s) => s.main_category === "girls"))
+      );
+    } else if (categoryFilter === "marriage") {
+      result = result.filter(
+        (b) =>
+          b.serviceFor === "women" ||
+          b.serviceFor === "unisex" ||
+          (b.services && b.services.some((s) => s.main_category === "marriage"))
+      );
+    } else if (categoryFilter === "premium") {
       result = result.filter((b) => b.category === "premium" || b.providesChairMirror);
     }
 
@@ -372,6 +396,36 @@ function BarberList() {
         )}
       </div>
 
+      {/* ================= SELECTED SERVICES HELPER BANNER (IF ANY) ================= */}
+      {servicesListParam && (
+        <div style={{
+          backgroundColor: "#FAF7EF",
+          border: "1px solid rgba(212, 160, 23, 0.4)",
+          borderRadius: "12px",
+          padding: "10px 14px",
+          marginBottom: "14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "10px"
+        }}>
+          <div>
+            <div style={{ fontSize: "11px", fontWeight: "750", color: "#B45309", textTransform: "uppercase" }}>
+              Looking for specialists
+            </div>
+            <div style={{ fontSize: "13px", fontWeight: "700", color: "#151515", marginTop: "2px" }}>
+              {servicesListParam}
+            </div>
+          </div>
+          <Link
+            to={`/customer/category/${categoryFilter !== "all" ? categoryFilter : "girls"}`}
+            style={{ fontSize: "12px", fontWeight: "700", color: "#D4A017", textDecoration: "none" }}
+          >
+            Change
+          </Link>
+        </div>
+      )}
+
       {/* ================= FILTER CHIPS ================= */}
       <div style={{
         display: "flex",
@@ -407,7 +461,61 @@ function BarberList() {
               : "#151515"
           }}
         >
-          All
+          All Salons
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCategoryFilter(categoryFilter === "boys" ? "all" : "boys")}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "7px 14px",
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: "700",
+            cursor: "pointer",
+            border: categoryFilter === "boys" ? "1.5px solid #D4A017" : "1px solid rgba(0, 0, 0, 0.08)",
+            backgroundColor: categoryFilter === "boys" ? "#18181B" : "#FFFFFF",
+            color: categoryFilter === "boys" ? "#FAF7EF" : "#151515"
+          }}
+        >
+          👨 Men & Boys
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCategoryFilter(categoryFilter === "girls" ? "all" : "girls")}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "7px 14px",
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: "700",
+            cursor: "pointer",
+            border: categoryFilter === "girls" ? "1.5px solid #E11D48" : "1px solid rgba(0, 0, 0, 0.08)",
+            backgroundColor: categoryFilter === "girls" ? "#2A101C" : "#FFFFFF",
+            color: categoryFilter === "girls" ? "#FAF7EF" : "#151515"
+          }}
+        >
+          👩 Women & Girls
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCategoryFilter(categoryFilter === "marriage" ? "all" : "marriage")}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "7px 14px",
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: "700",
+            cursor: "pointer",
+            border: categoryFilter === "marriage" ? "1.5px solid #F59E0B" : "1px solid rgba(0, 0, 0, 0.08)",
+            backgroundColor: categoryFilter === "marriage" ? "#3B1218" : "#FFFFFF",
+            color: categoryFilter === "marriage" ? "#FAF7EF" : "#151515"
+          }}
+        >
+          ✨ Marriage Special
         </button>
 
         <button

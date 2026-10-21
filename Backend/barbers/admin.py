@@ -29,6 +29,7 @@ class BarberProfileAdmin(admin.ModelAdmin):
         "shop_name",
         "owner_name",
         "category",
+        "service_for",
         "provides_chair_mirror",
         "city",
         "pincode",
@@ -49,6 +50,7 @@ class BarberProfileAdmin(admin.ModelAdmin):
 
     list_filter = (
         "category",
+        "service_for",
         "provides_chair_mirror",
         "is_active",
         "home_service_enabled",
@@ -73,6 +75,7 @@ class BarberProfileAdmin(admin.ModelAdmin):
     fields = (
         "user",
         "category",
+        "service_for",
         "provides_chair_mirror",
         "profile_picture",
         "profile_picture_preview",
@@ -134,6 +137,9 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "barber",
+        "main_category",
+        "sub_category",
+        "package_type",
         "duration",
         "shop_price",
         "home_price",
@@ -142,7 +148,9 @@ class ServiceAdmin(admin.ModelAdmin):
 
     list_filter = (
         "is_active",
-        "name",
+        "main_category",
+        "sub_category",
+        "package_type",
     )
 
     search_fields = (
@@ -163,6 +171,7 @@ class BarberApplicationAdmin(admin.ModelAdmin):
         "shop_name",
         "owner_name",
         "category",
+        "service_for",
         "provides_chair_mirror",
         "mobile",
         "email",
@@ -174,6 +183,7 @@ class BarberApplicationAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
         "category",
+        "service_for",
         "provides_chair_mirror",
         "city",
         "created_at",
@@ -245,6 +255,7 @@ class BarberApplicationAdmin(admin.ModelAdmin):
                     barber_profile = BarberProfile.objects.create(
                         user=user,
                         category=application.category,
+                        service_for=getattr(application, "service_for", "men"),
                         provides_chair_mirror=application.provides_chair_mirror,
                         owner_name=application.owner_name,
                         shop_name=application.shop_name,
@@ -261,6 +272,7 @@ class BarberApplicationAdmin(admin.ModelAdmin):
                     )
                 else:
                     barber_profile.category = application.category
+                    barber_profile.service_for = getattr(application, "service_for", "men")
                     barber_profile.provides_chair_mirror = application.provides_chair_mirror
                     barber_profile.owner_name = application.owner_name
                     barber_profile.shop_name = application.shop_name
@@ -276,27 +288,59 @@ class BarberApplicationAdmin(admin.ModelAdmin):
                     barber_profile.is_active = True
                     barber_profile.save()
 
-                if not Service.objects.filter(barber=barber_profile, name="Haircut").exists():
-                    Service.objects.create(
-                        barber=barber_profile,
-                        name="Haircut",
-                        description="Basic haircut service",
-                        duration=30,
-                        shop_price=application.haircut_shop_price,
-                        home_price=application.haircut_home_price,
-                        is_active=True,
-                    )
+                app_service_for = getattr(application, "service_for", "men")
 
-                if not Service.objects.filter(barber=barber_profile, name="Beard").exists():
-                    Service.objects.create(
-                        barber=barber_profile,
-                        name="Beard",
-                        description="Basic beard service",
-                        duration=20,
-                        shop_price=application.beard_shop_price,
-                        home_price=application.beard_home_price,
-                        is_active=True,
-                    )
+                if app_service_for == "women":
+                    if not Service.objects.filter(barber=barber_profile, name="Facial & Clean-up").exists():
+                        Service.objects.create(
+                            barber=barber_profile,
+                            main_category="girls",
+                            sub_category="skin_care",
+                            name="Facial & Clean-up",
+                            description="Deep cleansing, exfoliation, and hydration for glowing skin",
+                            duration=45,
+                            shop_price=application.haircut_shop_price or 499,
+                            home_price=application.haircut_home_price or 599,
+                            is_active=True,
+                        )
+                    if not Service.objects.filter(barber=barber_profile, name="Haircut & Styling").exists():
+                        Service.objects.create(
+                            barber=barber_profile,
+                            main_category="girls",
+                            sub_category="hair_care",
+                            name="Haircut & Styling",
+                            description="Trimming, layering, and styling hair according to your preference",
+                            duration=35,
+                            shop_price=application.beard_shop_price or 350,
+                            home_price=application.beard_home_price or 450,
+                            is_active=True,
+                        )
+                else:
+                    if not Service.objects.filter(barber=barber_profile, name="Haircut").exists():
+                        Service.objects.create(
+                            barber=barber_profile,
+                            main_category="boys",
+                            sub_category="haircut",
+                            name="Haircut",
+                            description="Basic haircut service",
+                            duration=30,
+                            shop_price=application.haircut_shop_price,
+                            home_price=application.haircut_home_price,
+                            is_active=True,
+                        )
+
+                    if not Service.objects.filter(barber=barber_profile, name="Beard").exists():
+                        Service.objects.create(
+                            barber=barber_profile,
+                            main_category="boys",
+                            sub_category="beard",
+                            name="Beard",
+                            description="Basic beard grooming and styling",
+                            duration=20,
+                            shop_price=application.beard_shop_price,
+                            home_price=application.beard_home_price,
+                            is_active=True,
+                        )
 
                 if application.status != "approved":
                     application.status = "approved"

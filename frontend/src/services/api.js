@@ -83,7 +83,7 @@ export function getMediaUrl(url) {
 // ==============================================================================
 
 export function getCurrentContextRole() {
-  if (typeof window !== "undefined" && window.location) {
+  if (typeof window !== "undefined" && window.location) { 
     if (window.location.pathname.startsWith("/barber")) {
       return "barber";
     }

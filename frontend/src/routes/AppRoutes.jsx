@@ -6,6 +6,7 @@ import Home from "../pages/landing/Home";
 import CustomerLogin from "../pages/customer/CustomerLogin";
 import CustomerRegister from "../pages/customer/CustomerRegister";
 import CustomerDashboard from "../pages/customer/CustomerDashboard";
+import CategoryServices from "../pages/customer/CategoryServices";
 import CustomerProfile from "../pages/customer/CustomerProfile";
 import ChangePassword from "../pages/customer/ChangePassword";
 import BarberList from "../pages/customer/BarberList";
@@ -70,6 +71,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="customer">
             <CustomerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/category"
+        element={
+          <ProtectedRoute requiredRole="customer">
+            <CategoryServices />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/category/:categoryKey"
+        element={
+          <ProtectedRoute requiredRole="customer">
+            <CategoryServices />
           </ProtectedRoute>
         }
       />

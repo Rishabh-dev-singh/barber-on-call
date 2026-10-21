@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import BarberProfile, Service, BarberApplication, BarberSchedule, BarberReview, default_weekly_schedule
+from .catalog_data import CATEGORIES_CONFIG, MASTER_SERVICES
 from .serializers import (
     BarberProfileSerializer,
     ServiceSerializer,
@@ -24,6 +25,21 @@ class BarberListView(generics.ListAPIView):
         category = self.request.query_params.get("category")
         if category in ["standard", "premium"]:
             qs = qs.filter(category=category)
+
+        service_for = self.request.query_params.get("service_for")
+        if service_for in ["men", "women"]:
+            qs = qs.filter(Q(service_for=service_for) | Q(service_for="unisex"))
+        elif service_for == "unisex":
+            qs = qs.filter(service_for="unisex")
+
+        main_category = self.request.query_params.get("main_category")
+        if main_category in ["boys", "girls", "marriage"]:
+            if main_category == "boys":
+                qs = qs.filter(Q(service_for__in=["men", "unisex"]) | Q(services__main_category="boys")).distinct()
+            elif main_category == "girls":
+                qs = qs.filter(Q(service_for__in=["women", "unisex"]) | Q(services__main_category="girls")).distinct()
+            elif main_category == "marriage":
+                qs = qs.filter(Q(service_for__in=["women", "unisex"]) | Q(services__main_category="marriage")).distinct()
 
         chair_mirror = self.request.query_params.get("provides_chair_mirror")
         if chair_mirror is not None:
@@ -46,9 +62,13 @@ class BarberServiceListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsBarberUser]
 
     def get_queryset(self):
-        return Service.objects.filter(
+        qs = Service.objects.filter(
             barber__user=self.request.user
-        ).order_by("-id")
+        )
+        main_category = self.request.query_params.get("main_category")
+        if main_category in ["boys", "girls", "marriage"]:
+            qs = qs.filter(main_category=main_category)
+        return qs.order_by("-id")
 
     def perform_create(self, serializer):
         try:
@@ -350,5 +370,105 @@ class BarberChangePasswordView(APIView):
         user.save(update_fields=["password", "must_change_password"])
 
         return Response({"message": "Password changed successfully."}, status=200)
+
+
+class ServiceCatalogView(APIView):
+    """
+    Returns the master service catalog taxonomy and live services by category.
+    Supports filtering by ?category=boys/girls/marriage and ?sub_category=...
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        category_param = request.query_params.get("category")
+        sub_cat_param = request.query_params.get("sub_category")
+
+        active_db_services = (
+            Service.objects.filter(is_active=True, barber__is_active=True)
+            .select_related("barber")
+        )
+
+        categories_data = []
+        target_cats = [category_param] if category_param in CATEGORIES_CONFIG else list(CATEGORIES_CONFIG.keys())
+
+        for cat_key in target_cats:
+            cat_info = CATEGORIES_CONFIG[cat_key]
+            templates = [s for s in MASTER_SERVICES if s["main_category"] == cat_key]
+
+            if sub_cat_param:
+                templates = [s for s in templates if s["sub_category"] == sub_cat_param]
+
+            enriched_templates = []
+            for tmpl in templates:
+                matching_db = active_db_services.filter(
+                    Q(main_category=cat_key) & (Q(name__icontains=tmpl["name"]) | Q(sub_category=tmpl["sub_category"]))
+                )
+                min_shop = matching_db.filter(shop_price__gt=0).order_by("shop_price").values_list("shop_price", flat=True).first()
+                min_home = matching_db.filter(home_price__gt=0).order_by("home_price").values_list("home_price", flat=True).first()
+                available_providers_count = matching_db.values("barber_id").distinct().count()
+
+                enriched_templates.append({
+                    **tmpl,
+                    "starting_shop_price": float(min_shop) if min_shop is not None else tmpl["default_shop_price"],
+                    "starting_home_price": float(min_home) if min_home is not None else tmpl["default_home_price"],
+                    "available_providers_count": available_providers_count,
+                })
+
+            categories_data.append({
+                **cat_info,
+                "services": enriched_templates,
+            })
+
+        return Response({
+            "categories": categories_data,
+            "master_services": MASTER_SERVICES,
+        }, status=status.HTTP_200_OK)
+
+
+class BarberAddCatalogServiceView(APIView):
+    """
+    Allows a barber or salon owner to 1-click adopt a service from the master catalog,
+    optionally overriding shop_price, home_price, duration.
+    """
+    permission_classes = [permissions.IsAuthenticated, IsBarberUser]
+
+    def post(self, request):
+        try:
+            profile = BarberProfile.objects.get(user=request.user)
+        except BarberProfile.DoesNotExist:
+            return Response({"detail": "Barber profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        template_id = request.data.get("template_id")
+        template = next((s for s in MASTER_SERVICES if s["template_id"] == template_id), None)
+        if not template:
+            return Response({"detail": "Service template not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+        name = request.data.get("name") or template["name"]
+        description = request.data.get("description") or template["description"]
+        duration = int(request.data.get("duration") or template["duration"])
+        shop_price = request.data.get("shop_price", template["default_shop_price"])
+        home_price = request.data.get("home_price", template["default_home_price"])
+        main_category = template["main_category"]
+        sub_category = template["sub_category"]
+        package_type = template.get("package_type", "single")
+
+        # Update or create service for this barber
+        service, created = Service.objects.update_or_create(
+            barber=profile,
+            name=name,
+            defaults={
+                "description": description,
+                "duration": duration,
+                "shop_price": shop_price,
+                "home_price": home_price,
+                "main_category": main_category,
+                "sub_category": sub_category,
+                "package_type": package_type,
+                "is_active": True,
+            }
+        )
+
+        return Response(ServiceSerializer(service).data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
 
 

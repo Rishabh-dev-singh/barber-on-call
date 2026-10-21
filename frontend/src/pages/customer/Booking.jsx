@@ -199,6 +199,8 @@ function Booking() {
             duration: Number(s.duration || 30),
             shopPrice: Number(s.shop_price || 0),
             homePrice: Number(s.home_price || 0),
+            mainCategory: s.main_category || "boys",
+            subCategory: s.sub_category || "",
           }));
 
         setAllServices(formattedServices);
@@ -1116,8 +1118,25 @@ function Booking() {
                       {isSelected && <Check size={13} color="#151515" />}
                     </div>
                     <div>
-                      <div style={{ fontSize: "13.5px", fontWeight: "750", color: "#151515" }}>{s.name}</div>
-                      <div style={{ fontSize: "11px", color: "#6E6E6E" }}>{s.duration} mins</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <div style={{ fontSize: "13.5px", fontWeight: "750", color: "#151515" }}>{s.name}</div>
+                        {s.mainCategory && s.mainCategory !== "boys" && (
+                          <span style={{
+                            fontSize: "9.5px",
+                            fontWeight: "800",
+                            padding: "1px 5px",
+                            borderRadius: "4px",
+                            backgroundColor: s.mainCategory === "marriage" ? "#FEF3C7" : "#FFE4E6",
+                            color: s.mainCategory === "marriage" ? "#B45309" : "#BE123C",
+                            textTransform: "uppercase"
+                          }}>
+                            {s.mainCategory === "marriage" ? "Wedding" : "Women"}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: "11px", color: "#6E6E6E" }}>
+                        {s.duration} mins {s.subCategory ? `• ${s.subCategory.replace(/_/g, " ")}` : ""}
+                      </div>
                     </div>
                   </div>
                   <strong style={{ fontSize: "14px", color: "#151515" }}>₹{price}</strong>

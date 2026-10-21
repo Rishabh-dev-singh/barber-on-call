@@ -30,6 +30,7 @@ function BarberApplication() {
     service_radius: "5",
     home_visit_charge: "0",
     category: "standard",
+    service_for: "men",
     provides_chair_mirror: false,
     haircut_shop_price: "",
     haircut_home_price: "",
@@ -355,6 +356,26 @@ function BarberApplication() {
             </div>
           </div>
 
+          {/* Service Specialization */}
+          <div>
+            <label style={{ fontSize: "12px", fontWeight: "700", color: "#151515", display: "block", marginBottom: "4px" }}>
+              Salon / Specialist Specialization *
+            </label>
+            <select
+              name="service_for"
+              value={formData.service_for}
+              onChange={handleChange}
+              style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid rgba(0,0,0,0.12)", fontSize: "13px", boxSizing: "border-box", fontWeight: "600" }}
+            >
+              <option value="men">👨 For Men & Boys Only (Gents Barber & Salon)</option>
+              <option value="women">👩 For Women & Girls Only (Ladies Beauty Salon & Parlour)</option>
+              <option value="unisex">✨ Unisex / Bridal Studio (Both Men & Women)</option>
+            </select>
+            <span style={{ fontSize: "11px", color: "#6E6E6E", marginTop: "3px", display: "block" }}>
+              Helps customers discover your salon in the right category.
+            </span>
+          </div>
+
           {/* Service Mode & Category */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
             <div>
@@ -441,13 +462,13 @@ function BarberApplication() {
           {/* Pricing Guidance */}
           <div style={{ backgroundColor: "#FAF7EF", padding: "12px", borderRadius: "10px", border: "1px solid rgba(212, 160, 23, 0.3)" }}>
             <span style={{ fontSize: "11px", fontWeight: "700", color: "#D4A017", textTransform: "uppercase", display: "block", marginBottom: "8px" }}>
-              Initial Service Pricing
+              Initial Service Pricing ({formData.service_for === "women" ? "Ladies Salon Services" : "Standard Grooming"})
             </span>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "8px" }}>
               <input
                 type="number"
                 name="haircut_shop_price"
-                placeholder="Haircut Salon ₹"
+                placeholder={formData.service_for === "women" ? "Facial Salon ₹" : "Haircut Salon ₹"}
                 value={formData.haircut_shop_price}
                 onChange={handleChange}
                 style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", boxSizing: "border-box" }}
@@ -455,12 +476,33 @@ function BarberApplication() {
               <input
                 type="number"
                 name="haircut_home_price"
-                placeholder="Haircut Doorstep ₹"
+                placeholder={formData.service_for === "women" ? "Facial Doorstep ₹" : "Haircut Doorstep ₹"}
                 value={formData.haircut_home_price}
                 onChange={handleChange}
                 style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", boxSizing: "border-box" }}
               />
             </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+              <input
+                type="number"
+                name="beard_shop_price"
+                placeholder={formData.service_for === "women" ? "Haircut/Styling Salon ₹" : "Beard Salon ₹"}
+                value={formData.beard_shop_price}
+                onChange={handleChange}
+                style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", boxSizing: "border-box" }}
+              />
+              <input
+                type="number"
+                name="beard_home_price"
+                placeholder={formData.service_for === "women" ? "Haircut/Styling Home ₹" : "Beard Doorstep ₹"}
+                value={formData.beard_home_price}
+                onChange={handleChange}
+                style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", boxSizing: "border-box" }}
+              />
+            </div>
+            <span style={{ fontSize: "11px", color: "#78350F", marginTop: "6px", display: "block" }}>
+              💡 You can add full catalog services (Skin, Hair, Nails, Makeup & Bridal) easily in your dashboard anytime.
+            </span>
           </div>
 
           {/* Aadhaar / Document Upload */}

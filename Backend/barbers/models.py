@@ -72,6 +72,20 @@ class BarberProfile(models.Model):
         default="standard",
     )
 
+    SERVICE_FOR_CHOICES = [
+        ("men", "Men & Boys Only"),
+        ("women", "Women & Girls Only"),
+        ("unisex", "Unisex / Both"),
+    ]
+
+    service_for = models.CharField(
+        max_length=20,
+        choices=SERVICE_FOR_CHOICES,
+        default="men",
+        db_index=True,
+        help_text="Target audience: men, women, or unisex salon",
+    )
+
     provides_chair_mirror = models.BooleanField(
         default=False,
         help_text="Whether barber provides portable chair and mirror for home visits",
@@ -104,6 +118,40 @@ class Service(models.Model):
         BarberProfile,
         on_delete=models.CASCADE,
         related_name="services"
+    )
+
+    MAIN_CATEGORY_CHOICES = [
+        ("boys", "For Men & Boys"),
+        ("girls", "For Women & Girls"),
+        ("marriage", "Marriage Special"),
+    ]
+
+    main_category = models.CharField(
+        max_length=20,
+        choices=MAIN_CATEGORY_CHOICES,
+        default="boys",
+        db_index=True,
+        help_text="Primary segment: boys, girls, or marriage",
+    )
+
+    sub_category = models.CharField(
+        max_length=50,
+        default="haircut",
+        blank=True,
+        db_index=True,
+        help_text="Subcategory e.g. skin_care, hair_care, nail_care, makeup, pre_bridal, event_day",
+    )
+
+    PACKAGE_TYPE_CHOICES = [
+        ("single", "Single Service"),
+        ("package", "Special Package"),
+    ]
+
+    package_type = models.CharField(
+        max_length=20,
+        choices=PACKAGE_TYPE_CHOICES,
+        default="single",
+        help_text="Whether this is a single service or package",
     )
 
     name = models.CharField(
@@ -207,6 +255,17 @@ class BarberApplication(models.Model):
             ("premium", "Premium Barber"),
         ],
         default="standard",
+    )
+
+    service_for = models.CharField(
+        max_length=20,
+        choices=[
+            ("men", "Men & Boys Only"),
+            ("women", "Women & Girls Only"),
+            ("unisex", "Unisex / Both"),
+        ],
+        default="men",
+        help_text="Specialization: men, women, or unisex",
     )
 
     provides_chair_mirror = models.BooleanField(
