@@ -4,6 +4,46 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User, Customer, Barber
 
 
+@admin.register(User)
+class MasterUserAdmin(UserAdmin):
+    model = User
+    list_display = (
+        "username",
+        "email",
+        "phone",
+        "role",
+        "is_staff",
+        "is_superuser",
+        "is_active",
+        "date_joined",
+    )
+    list_filter = (
+        "role",
+        "is_staff",
+        "is_superuser",
+        "is_active",
+        "date_joined",
+    )
+    search_fields = (
+        "username",
+        "email",
+        "phone",
+    )
+    fieldsets = UserAdmin.fieldsets + (
+        (
+            "Profile Details",
+            {
+                "fields": (
+                    "phone",
+                    "role",
+                    "profile_picture",
+                    "must_change_password",
+                )
+            },
+        ),
+    )
+
+
 @admin.register(Customer)
 class CustomerAdmin(UserAdmin):
     model = Customer
