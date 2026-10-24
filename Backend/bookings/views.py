@@ -754,7 +754,7 @@ class CreateRazorpayOrderView(APIView):
         )
 
         customer_name = request.user.get_full_name() or request.user.username
-        barber_name = booking.accepted_barber.shop_name if booking.accepted_barber else "Barber On Call"
+        barber_name = booking.accepted_barber.shop_name if booking.accepted_barber else "Royal Grooming"
 
         return Response(
             {

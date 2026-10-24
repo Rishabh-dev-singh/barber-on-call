@@ -210,7 +210,7 @@ function CustomerRegister() {
         });
 
         if (showToast) {
-          showToast("Account created successfully! Welcome to Barber On Call.", "success");
+          showToast("Account created successfully! Welcome to Royal Grooming.", "success");
         }
         setTimeout(() => {
           navigate("/customer/barbers", { replace: true });
@@ -278,7 +278,7 @@ function CustomerRegister() {
             Create Account
           </h1>
           <p style={{ margin: 0, fontSize: "13px", color: "#6E6E6E" }}>
-            Join Barber On Call for premium doorstep grooming
+            Join Royal Grooming for premium doorstep grooming
           </p>
         </div>
 

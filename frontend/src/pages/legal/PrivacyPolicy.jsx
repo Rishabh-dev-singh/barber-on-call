@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <LegalLayout
       title="Privacy Policy"
-      subtitle="How Barber On Call collects, protects, and handles your personal data."
+      subtitle="How Royal Grooming collects, protects, and handles your personal data."
       lastUpdated="October 2026"
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -14,7 +14,7 @@ export default function PrivacyPolicy() {
             1. Introduction
           </h2>
           <p>
-            Welcome to <strong>Barber On Call</strong> (operated by Atar Singh, having its principal operations in Jaipur, Rajasthan, India). 
+            Welcome to <strong>Royal Grooming</strong> (operated by Atar Singh, having its principal operations in Jaipur, Rajasthan, India). 
             We respect your privacy and are committed to protecting personal data collected through our website (
             <a href="https://barberoncall.site" style={{ color: "#E5A93C" }}>https://barberoncall.site</a>) and related web/mobile applications.
           </p>
@@ -42,10 +42,10 @@ export default function PrivacyPolicy() {
             3. Payment Data Security (Razorpay Integration)
           </h2>
           <p>
-            All online payments made on Barber On Call are processed via our authorized, PCI-DSS Level 1 compliant payment partner, <strong>Razorpay Software Private Limited</strong>.
+            All online payments made on Royal Grooming are processed via our authorized, PCI-DSS Level 1 compliant payment partner, <strong>Razorpay Software Private Limited</strong>.
           </p>
           <p>
-            <strong>Important:</strong> Barber On Call does <em>not</em> store, capture, or have access to your full credit/debit card numbers, CVV codes, or net banking passwords. All sensitive payment credentials are encrypted directly through Razorpay’s secured payment gateway.
+            <strong>Important:</strong> Royal Grooming does <em>not</em> store, capture, or have access to your full credit/debit card numbers, CVV codes, or net banking passwords. All sensitive payment credentials are encrypted directly through Razorpay’s secured payment gateway.
           </p>
         </section>
 
@@ -111,7 +111,7 @@ export default function PrivacyPolicy() {
               marginTop: "12px",
             }}
           >
-            <p style={{ margin: "0 0 6px" }}><strong>Entity Name:</strong> Barber On Call</p>
+            <p style={{ margin: "0 0 6px" }}><strong>Entity Name:</strong> Royal Grooming</p>
             <p style={{ margin: "0 0 6px" }}><strong>Grievance Officer:</strong> Atar Singh</p>
             <p style={{ margin: "0 0 6px" }}><strong>Email:</strong> <a href="mailto:matar4u@gmail.com" style={{ color: "#E5A93C" }}>matar4u@gmail.com</a></p>
             <p style={{ margin: "0 0 6px" }}><strong>Phone:</strong> <a href="tel:+919784863800" style={{ color: "#E5A93C" }}>+91 9784 863800</a></p>

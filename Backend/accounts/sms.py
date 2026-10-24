@@ -58,7 +58,7 @@ def send_fast2sms_otp(phone, otp):
         # 2. Secondary Fallback: Fast2SMS Quick SMS route 'q'
         try:
             q_payload = json.dumps({
-                "message": f"Your Barber On Call verification code is {otp}. Valid for 5 minutes.",
+                "message": f"Your Royal Grooming verification code is {otp}. Valid for 5 minutes.",
                 "language": "english",
                 "route": "q",
                 "numbers": digits,

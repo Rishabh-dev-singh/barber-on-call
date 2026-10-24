@@ -158,7 +158,7 @@ function BarberApplication() {
               Application Submitted
             </h1>
             <p style={{ margin: 0, fontSize: "13px", color: "#6E6E6E", lineHeight: "1.4" }}>
-              Thank you for applying to partner with Barber On Call. Our onboarding team will verify your credentials and shop location within 24 hours.
+              Thank you for applying to partner with Royal Grooming. Our onboarding team will verify your credentials and shop location within 24 hours.
             </p>
           </div>
 

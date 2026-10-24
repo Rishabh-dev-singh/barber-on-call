@@ -96,7 +96,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, children }) 
                 letterSpacing: "-0.3px",
               }}
             >
-              Barber <span style={{ color: "#E5A93C" }}>On Call</span>
+              Royal <span style={{ color: "#E5A93C" }}>Grooming</span>
             </span>
           </Link>
 
@@ -274,7 +274,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, children }) 
                   marginBottom: "6px",
                 }}
               >
-                Barber <span style={{ color: "#E5A93C" }}>On Call</span>
+                Royal <span style={{ color: "#E5A93C" }}>Grooming</span>
               </div>
               <p
                 style={{
@@ -329,7 +329,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, children }) 
               color: "rgba(250, 247, 239, 0.4)",
             }}
           >
-            <span>© {new Date().getFullYear()} Barber On Call (Prop. Atar Singh). All rights reserved.</span>
+            <span>© {new Date().getFullYear()} Royal Grooming (Prop. Atar Singh). All rights reserved.</span>
             <span>Razorpay Verified Merchant</span>
           </div>
         </div>

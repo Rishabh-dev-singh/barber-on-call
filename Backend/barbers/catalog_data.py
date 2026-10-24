@@ -1,5 +1,5 @@
 """
-Master Catalog & Taxonomy for Barber On Call
+Master Catalog & Taxonomy for Royal Grooming
 Covers 3 primary service categories:
 1. boys: For Men & Boys
 2. girls: For Women & Girls

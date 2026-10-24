@@ -14,7 +14,7 @@ export default function RefundPolicy() {
             1. Overview
           </h2>
           <p>
-            At <strong>Barber On Call</strong>, we strive to deliver an exceptional grooming experience. We understand that plans can change unexpectedly. This policy outlines how cancellations, rescheduling, and payment refunds are handled for all services booked through our platform.
+            At <strong>Royal Grooming</strong>, we strive to deliver an exceptional grooming experience. We understand that plans can change unexpectedly. This policy outlines how cancellations, rescheduling, and payment refunds are handled for all services booked through our platform.
           </p>
         </section>
 

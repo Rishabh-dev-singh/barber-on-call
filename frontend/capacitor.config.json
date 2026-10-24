@@ -1,6 +1,6 @@
 {
   "appId": "com.barberoncall.app",
-  "appName": "Barber On Call",
+  "appName": "Royal Grooming",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

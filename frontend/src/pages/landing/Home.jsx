@@ -113,10 +113,9 @@ export default function Home() {
 
               <div style={{ display: "flex", alignItems: "baseline", gap: "5px" }}>
                 <span style={{ fontSize: "19px", fontWeight: "800", color: "#FFFFFF", letterSpacing: "-0.3px" }}>
-                  Barber
-                </span>
+                  Royal</span>
                 <span style={{ fontSize: "19px", fontWeight: "800", color: "#E5A93C", letterSpacing: "-0.3px" }}>
-                  On Call
+                  Grooming
                 </span>
               </div>
             </div>
@@ -262,7 +261,7 @@ export default function Home() {
             }}
           >
             <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.75)" }}>
-              <span>New to Barber On Call? </span>
+              <span>New to Royal Grooming? </span>
               <Link
                 to="/customer/register"
                 style={{
@@ -870,7 +869,7 @@ export default function Home() {
               </div>
               <div>
                 <div style={{ fontSize: "15px", fontWeight: "800", color: "#FFFFFF", lineHeight: 1.1 }}>
-                  Barber <span style={{ color: "#E5A93C" }}>On Call</span>
+                  Royal <span style={{ color: "#E5A93C" }}>Grooming</span>
                 </div>
                 <p style={{ margin: "2px 0 0 0", fontSize: "10.5px", color: "#777" }}>
                   Premium grooming, made simple.
@@ -994,7 +993,7 @@ export default function Home() {
             }}
           >
             <div>
-              © 2026 <strong>Barber On Call</strong> (Prop. Atar Singh). All rights reserved.
+              © 2026 <strong>Royal Grooming</strong> (Prop. Atar Singh). All rights reserved.
             </div>
             <div style={{ fontSize: "10.5px", color: "rgba(250, 247, 239, 0.4)" }}>
               Jaipur, Rajasthan • Helpline: +91 9784 863800 • Razorpay Secured

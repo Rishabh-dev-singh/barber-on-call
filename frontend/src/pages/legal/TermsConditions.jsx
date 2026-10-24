@@ -5,7 +5,7 @@ export default function TermsConditions() {
   return (
     <LegalLayout
       title="Terms & Conditions"
-      subtitle="Terms of Service governing the use of Barber On Call platform."
+      subtitle="Terms of Service governing the use of Royal Grooming platform."
       lastUpdated="October 2026"
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -15,7 +15,7 @@ export default function TermsConditions() {
           </h2>
           <p>
             By accessing or using the website <a href="https://barberoncall.site" style={{ color: "#E5A93C" }}>barberoncall.site</a>, 
-            mobile platform, or booking any service through Barber On Call, you agree to be bound by these Terms and Conditions. 
+            mobile platform, or booking any service through Royal Grooming, you agree to be bound by these Terms and Conditions. 
             If you do not agree to these terms, please do not use our platform.
           </p>
         </section>
@@ -25,7 +25,7 @@ export default function TermsConditions() {
             2. Platform Description
           </h2>
           <p>
-            Barber On Call is an on-demand grooming marketplace connecting individual customers looking for hair grooming, beard trimming, styling, facials, and personal care services with independent verified barbers and grooming professionals ("Barber Partners") who provide either doorstep services or appointments at registered salons.
+            Royal Grooming is an on-demand grooming marketplace connecting individual customers looking for hair grooming, beard trimming, styling, facials, and personal care services with independent verified barbers and grooming professionals ("Barber Partners") who provide either doorstep services or appointments at registered salons.
           </p>
         </section>
 
@@ -68,7 +68,7 @@ export default function TermsConditions() {
             6. Hygiene and Safety Standards
           </h2>
           <p>
-            Barber Partners on Barber On Call are required to adhere to high sanitation standards, including using sanitized scissors and clippers, disposable neck strips/towels, and fresh blades for every customer. Customers agree to inform barbers in advance of any skin conditions, allergies, or infections.
+            Barber Partners on Royal Grooming are required to adhere to high sanitation standards, including using sanitized scissors and clippers, disposable neck strips/towels, and fresh blades for every customer. Customers agree to inform barbers in advance of any skin conditions, allergies, or infections.
           </p>
         </section>
 
@@ -86,7 +86,7 @@ export default function TermsConditions() {
             8. Limitation of Liability
           </h2>
           <p>
-            Barber On Call acts as a technological facilitator connecting customers and independent professional barbers. While we screen and verify barber credentials, Barber On Call shall not be held liable for indirect, incidental, or consequential damages resulting from transactions between users.
+            Royal Grooming acts as a technological facilitator connecting customers and independent professional barbers. While we screen and verify barber credentials, Royal Grooming shall not be held liable for indirect, incidental, or consequential damages resulting from transactions between users.
           </p>
         </section>
 
@@ -114,7 +114,7 @@ export default function TermsConditions() {
               padding: "16px",
             }}
           >
-            <p style={{ margin: "0 0 6px" }}><strong>Business Name:</strong> Barber On Call</p>
+            <p style={{ margin: "0 0 6px" }}><strong>Business Name:</strong> Royal Grooming</p>
             <p style={{ margin: "0 0 6px" }}><strong>Email:</strong> <a href="mailto:matar4u@gmail.com" style={{ color: "#E5A93C" }}>matar4u@gmail.com</a></p>
             <p style={{ margin: "0 0 6px" }}><strong>Helpline:</strong> <a href="tel:+919784863800" style={{ color: "#E5A93C" }}>+91 9784 863800</a></p>
             <p style={{ margin: 0 }}><strong>City:</strong> Jaipur, Rajasthan, India</p>

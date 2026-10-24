@@ -372,7 +372,7 @@ function BarberLogin() {
               </button>
             </div>
             <p style={{ margin: 0, fontSize: "12.5px", color: "#6E6E6E" }}>
-              Please contact the Barber On Call Partner Support desk at <strong>support@barberoncall.com</strong> or call admin directly to reset your partner credentials.
+              Please contact the Royal Grooming Partner Support desk at <strong>support@barberoncall.com</strong> or call admin directly to reset your partner credentials.
             </p>
             <button
               type="button"

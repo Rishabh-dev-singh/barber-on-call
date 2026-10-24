@@ -44,7 +44,7 @@ export default function MobileHeader({ unreadCount: initialUnreadCount = 0 }) {
     if (location.pathname.includes("/customer/booking")) return "Book Appointment";
     if (location.pathname.includes("/customer/change-password")) return "Change Password";
     if (location.pathname.includes("/barber/change-password")) return "Change Password";
-    return "Barber On Call";
+    return "Royal Grooming";
   };
 
   return (
@@ -77,7 +77,7 @@ export default function MobileHeader({ unreadCount: initialUnreadCount = 0 }) {
                     <Scissors size={18} color="#D4A017" />
                   </div>
                   <div className="brand-info">
-                    <span className="brand-title">Barber On Call</span>
+                    <span className="brand-title">Royal Grooming</span>
                     <div className="location-pill">
                       <MapPin size={11} color="#D4A017" />
                       <span className="location-text">Jaipur, Rajasthan</span>

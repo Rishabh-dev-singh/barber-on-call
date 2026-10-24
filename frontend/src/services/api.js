@@ -1,5 +1,5 @@
 // ==============================================================================
-// Centralized API Service for Barber On Call
+// Centralized API Service for Royal Grooming
 // ==============================================================================
 import { Capacitor } from "@capacitor/core";
 

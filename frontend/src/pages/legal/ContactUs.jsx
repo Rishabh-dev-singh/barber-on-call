@@ -146,7 +146,7 @@ export default function ContactUs() {
             <div>
               <h4 style={{ margin: "0 0 4px", fontSize: "15px", color: "#FFFFFF" }}>Registered Address</h4>
               <p style={{ margin: 0, fontSize: "13px", color: "rgba(250, 247, 239, 0.8)", lineHeight: 1.5 }}>
-                Barber On Call (Prop. Atar Singh)<br />
+                Royal Grooming (Prop. Atar Singh)<br />
                 Jaipur, Rajasthan, India - 302001
               </p>
             </div>

@@ -60,7 +60,7 @@ function Navbar() {
             </div>
             <div>
               <div style={{ fontSize: "16px", fontWeight: "800", color: "#FAF7EF", lineHeight: 1.1, letterSpacing: "-0.2px" }}>
-                Barber<span style={{ color: "#D4A017", marginLeft: "4px" }}>On Call</span>
+                Royal<span style={{ color: "#D4A017", marginLeft: "4px" }}>Grooming</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
                 <MapPin size={11} color="#D4A017" />

@@ -168,7 +168,7 @@ function Footer() {
             <span>Verified Professionals • 100% Hygienic Service</span>
           </div>
           <p style={{ margin: 0, fontSize: "11px", color: "rgba(250, 247, 239, 0.5)" }}>
-            © {new Date().getFullYear()} Barber On Call (Prop. Atar Singh) • Premium Grooming Platform
+            © {new Date().getFullYear()} Royal Grooming (Prop. Atar Singh) • Premium Grooming Platform
           </p>
         </div>
 

@@ -183,7 +183,7 @@ function MyBookings() {
           key: rzpKey,
           amount: data.amount,
           currency: data.currency || "INR",
-          name: data.barber_shop_name || "Barber On Call",
+          name: data.barber_shop_name || "Royal Grooming",
           description: `Payment for ${data.service_name || "Barber Service"}`,
           order_id: data.order_id,
           prefill: {
@@ -458,7 +458,7 @@ function MyBookings() {
             const barberName =
               booking.barber?.shop_name ||
               booking.barber?.owner_name ||
-              "Barber On Call Specialist";
+              "Royal Grooming Specialist";
             const serviceNames = booking.services?.length
               ? booking.services.map((s) => s.name).join(", ")
               : booking.services_display || booking.service?.name || "Grooming Service";
