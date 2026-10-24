@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from accounts.models import User
 
 
@@ -423,3 +424,129 @@ class BarberReview(models.Model):
 
     def __str__(self):
         return f"{self.customer} - {self.barber.shop_name} ({self.rating}★)"
+
+
+# ============================================================
+# PROMOTION & OFFER BANNER MODEL (Admin Managed)
+# ============================================================
+
+class PromotionBanner(models.Model):
+    CATEGORY_CHOICES = (
+        ("all", "All Customers / Home Dashboard"),
+        ("boys", "For Boys & Men"),
+        ("girls", "For Girls & Women"),
+        ("marriage", "Marriage Special"),
+    )
+
+    BANNER_TYPE_CHOICES = (
+        ("offer", "Discount / Special Offer"),
+        ("announcement", "Announcement / Festival"),
+        ("partner_ad", "Sponsored / Partner Ad"),
+    )
+
+    title = models.CharField(
+        max_length=200,
+        help_text="Headline e.g. 'Wedding Season Mega Offer - 25% OFF'"
+    )
+    subtitle = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Short description or coupon code info"
+    )
+    badge_text = models.CharField(
+        max_length=50,
+        blank=True,
+        default="LIMITED TIME",
+        help_text="Badge e.g. '50% OFF', 'NEW', 'FESTIVAL SPECIAL'"
+    )
+    image = models.ImageField(
+        upload_to="banners/",
+        blank=True,
+        null=True,
+        help_text="Banner graphic image (optional, gradient used if not provided)"
+    )
+    bg_gradient = models.CharField(
+        max_length=150,
+        default="linear-gradient(135deg, #18181B 0%, #27272A 100%)",
+        help_text="CSS gradient when image is not uploaded"
+    )
+    target_category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="all",
+        help_text="Where this banner will display"
+    )
+    banner_type = models.CharField(
+        max_length=20,
+        choices=BANNER_TYPE_CHOICES,
+        default="offer"
+    )
+    action_link = models.CharField(
+        max_length=255,
+        blank=True,
+        default="/customer/category/marriage",
+        help_text="Destination route on click (e.g. /customer/category/marriage or /customer/barbers)"
+    )
+    button_text = models.CharField(
+        max_length=50,
+        blank=True,
+        default="Claim Offer",
+        help_text="Action button label"
+    )
+    coupon_code = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Optional coupon code (e.g. ROYAL20)"
+    )
+    discount_percentage = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Discount percentage (e.g. 20 for 20%)"
+    )
+    discount_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Flat discount amount in ₹"
+    )
+    start_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Banner will be hidden before this date/time (leave empty for immediate)"
+    )
+    end_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Banner will auto-expire after this date/time (leave empty for no expiry)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Master on/off switch for this banner"
+    )
+    priority = models.PositiveIntegerField(
+        default=1,
+        help_text="Display order (1 = highest priority / shows first)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["priority", "-created_at"]
+        verbose_name = "Promotion & Offer Banner"
+        verbose_name_plural = "Promotions & Offer Banners"
+
+    def __str__(self):
+        return f"{self.title} [{self.get_target_category_display()}]"
+
+    @property
+    def is_currently_valid(self):
+        if not self.is_active:
+            return False
+        now = timezone.now()
+        if self.start_date and now < self.start_date:
+            return False
+        if self.end_date and now > self.end_date:
+            return False
+        return True
+

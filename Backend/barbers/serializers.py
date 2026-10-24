@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import BarberProfile, Service, BarberApplication, BarberSchedule, BarberReview
+from .models import (
+    BarberProfile,
+    Service,
+    BarberApplication,
+    BarberSchedule,
+    BarberReview,
+    PromotionBanner,
+)
 
 
 class BarberReviewSerializer(serializers.ModelSerializer):
@@ -215,3 +222,38 @@ class BarberApplicationSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["id", "status", "created_at"]
+
+
+class PromotionBannerSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PromotionBanner
+        fields = [
+            "id",
+            "title",
+            "subtitle",
+            "badge_text",
+            "image",
+            "image_url",
+            "bg_gradient",
+            "target_category",
+            "banner_type",
+            "action_link",
+            "button_text",
+            "coupon_code",
+            "discount_percentage",
+            "discount_amount",
+            "start_date",
+            "end_date",
+            "is_active",
+            "priority",
+        ]
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None

@@ -1,10 +1,19 @@
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from .models import BarberProfile, Service, BarberApplication, BarberSchedule, BarberReview, default_weekly_schedule
+from .models import (
+    BarberProfile,
+    Service,
+    BarberApplication,
+    BarberSchedule,
+    BarberReview,
+    PromotionBanner,
+    default_weekly_schedule,
+)
 from .catalog_data import CATEGORIES_CONFIG, MASTER_SERVICES
 from .serializers import (
     BarberProfileSerializer,
@@ -12,6 +21,7 @@ from .serializers import (
     BarberApplicationSerializer,
     BarberScheduleSerializer,
     BarberReviewSerializer,
+    PromotionBannerSerializer,
 )
 from .permissions import IsBarberUser
 
@@ -469,6 +479,29 @@ class BarberAddCatalogServiceView(APIView):
         )
 
         return Response(ServiceSerializer(service).data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+
+class PromotionBannerListView(generics.ListAPIView):
+    """
+    Public API returning active and non-expired promotional banners & ads.
+    Supports filtering by ?category=all|boys|girls|marriage
+    """
+    serializer_class = PromotionBannerSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        now = timezone.now()
+        qs = PromotionBanner.objects.filter(is_active=True)
+        # Filter by start & end date windows
+        qs = qs.filter(Q(start_date__isnull=True) | Q(start_date__lte=now))
+        qs = qs.filter(Q(end_date__isnull=True) | Q(end_date__gte=now))
+
+        category = self.request.query_params.get("category")
+        if category and category != "all":
+            qs = qs.filter(Q(target_category=category) | Q(target_category="all"))
+
+        return qs.order_by("priority", "-created_at")
+
 
 
 

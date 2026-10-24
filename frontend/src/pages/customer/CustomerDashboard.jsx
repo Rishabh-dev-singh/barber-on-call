@@ -31,6 +31,7 @@ function CustomerDashboard() {
   const [error, setError] = useState("");
   const [nearbyBarbers, setNearbyBarbers] = useState([]);
   const [upcomingBooking, setUpcomingBooking] = useState(null);
+  const [banners, setBanners] = useState([]);
 
   // Load Profile and Barbers
   useEffect(() => {
@@ -98,6 +99,19 @@ function CustomerDashboard() {
           }
         } catch (e) {
           console.error("Barbers list load err", e);
+        }
+
+        // Fetch dynamic banners & promotional offers
+        try {
+          const bannersRes = await fetch(`${API_BASE}/api/barbers/banners/?category=all`);
+          if (bannersRes.ok) {
+            const bannersData = await bannersRes.json();
+            if (mounted) {
+              setBanners(Array.isArray(bannersData) ? bannersData : (bannersData.results || []));
+            }
+          }
+        } catch (e) {
+          console.error("Banners load err", e);
         }
 
       } catch (err) {
@@ -235,6 +249,149 @@ function CustomerDashboard() {
             </Link>
           </div>
         </div>
+      )}
+
+      {/* ================= DYNAMIC PROMOTION & OFFERS SLIDER ================= */}
+      {banners.length > 0 && (
+        <section>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Sparkles size={15} color="#D4A017" />
+              <h2 style={{ fontSize: "15px", fontWeight: "800", color: "#151515", margin: 0 }}>
+                Special Offers & Promotions
+              </h2>
+            </div>
+            <span style={{ fontSize: "11px", fontWeight: "750", color: "#B45309", backgroundColor: "#FEF3C7", padding: "2px 8px", borderRadius: "10px" }}>
+              Limited Time
+            </span>
+          </div>
+
+          <div style={{
+            display: "flex",
+            gap: "12px",
+            overflowX: "auto",
+            paddingBottom: "8px",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+          }}>
+            {banners.map((b) => (
+              <div
+                key={b.id}
+                onClick={() => {
+                  if (b.action_link) navigate(b.action_link);
+                }}
+                style={{
+                  minWidth: "290px",
+                  maxWidth: "340px",
+                  flex: "0 0 auto",
+                  scrollSnapAlign: "start",
+                  borderRadius: "18px",
+                  padding: "16px 18px",
+                  background: b.bg_gradient || "linear-gradient(135deg, #18181B 0%, #27272A 100%)",
+                  color: "#FAF7EF",
+                  cursor: "pointer",
+                  position: "relative",
+                  overflow: "hidden",
+                  boxShadow: "0 6px 18px rgba(0, 0, 0, 0.12)",
+                  border: "1px solid rgba(212, 160, 23, 0.35)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  minHeight: "135px",
+                  transition: "transform 0.15s ease",
+                }}
+              >
+                {/* Background image if provided */}
+                {b.image_url && (
+                  <img
+                    src={b.image_url}
+                    alt={b.title}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      opacity: 0.35,
+                      pointerEvents: "none",
+                    }}
+                  />
+                )}
+
+                <div style={{ position: "relative", zIndex: 2 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                    {b.badge_text && (
+                      <span style={{
+                        fontSize: "9.5px",
+                        fontWeight: "800",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                        backgroundColor: "#D4A017",
+                        color: "#151515",
+                        padding: "2px 7px",
+                        borderRadius: "6px",
+                      }}>
+                        {b.badge_text}
+                      </span>
+                    )}
+                    {b.coupon_code && (
+                      <span style={{
+                        fontSize: "10.5px",
+                        fontWeight: "800",
+                        color: "#FAF7EF",
+                        backgroundColor: "rgba(255,255,255,0.18)",
+                        padding: "2px 8px",
+                        borderRadius: "6px",
+                        border: "1px dashed rgba(255,255,255,0.4)"
+                      }}>
+                        Code: {b.coupon_code}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 style={{ fontSize: "16px", fontWeight: "850", margin: "4px 0 3px 0", color: "#FAF7EF", letterSpacing: "-0.2px" }}>
+                    {b.title}
+                  </h3>
+                  {b.subtitle && (
+                    <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(250, 247, 239, 0.8)", lineHeight: "1.35" }}>
+                      {b.subtitle}
+                    </p>
+                  )}
+                </div>
+
+                <div style={{
+                  position: "relative",
+                  zIndex: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: "12px",
+                  paddingTop: "8px",
+                  borderTop: "1px solid rgba(255,255,255,0.12)"
+                }}>
+                  <div style={{ fontSize: "13px", fontWeight: "850", color: "#D4A017" }}>
+                    {b.discount_percentage ? `${b.discount_percentage}% OFF` : (b.discount_amount ? `Flat ₹${b.discount_amount} OFF` : "Exclusive Offer")}
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontSize: "11px",
+                    fontWeight: "800",
+                    color: "#FAF7EF",
+                    backgroundColor: "rgba(255,255,255,0.15)",
+                    padding: "4px 10px",
+                    borderRadius: "14px"
+                  }}>
+                    <span>{b.button_text || "Claim Offer"}</span>
+                    <ArrowRight size={12} color="#FAF7EF" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* ================= 3 PRIMARY CATEGORY OPTION CARDS ================= */}

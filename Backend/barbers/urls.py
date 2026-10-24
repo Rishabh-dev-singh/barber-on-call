@@ -15,10 +15,16 @@ from .views import (
     BarberChangePasswordView,
     ServiceCatalogView,
     BarberAddCatalogServiceView,
+    PromotionBannerListView,
 )
 
 
 urlpatterns = [
+    path(
+        "banners/",
+        PromotionBannerListView.as_view(),
+        name="promotion-banners"
+    ),
     path(
         "catalog/",
         ServiceCatalogView.as_view(),

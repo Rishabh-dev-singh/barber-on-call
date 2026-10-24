@@ -78,8 +78,9 @@ function CategoryServices() {
   const [catalogData, setCatalogData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [promoBanner, setPromoBanner] = useState(null);
 
-  // Fetch Catalog
+  // Fetch Catalog & Category Banner
   useEffect(() => {
     let mounted = true;
     const fetchCatalog = async () => {
@@ -93,6 +94,23 @@ function CategoryServices() {
             setCatalogData(cat?.services || []);
           }
         }
+
+        // Fetch category promotion banner
+        try {
+          const bannerRes = await fetch(`${API_BASE_URL}/api/barbers/banners/?category=${activeCategory}`);
+          if (bannerRes.ok) {
+            const bannerData = await bannerRes.json();
+            const list = Array.isArray(bannerData) ? bannerData : (bannerData.results || []);
+            if (mounted && list.length > 0) {
+              setPromoBanner(list[0]);
+            } else if (mounted) {
+              setPromoBanner(null);
+            }
+          }
+        } catch (e) {
+          console.error("Banner fetch err", e);
+        }
+
       } catch (err) {
         console.error("Error fetching catalog", err);
       } finally {
@@ -284,6 +302,83 @@ function CategoryServices() {
           {catConfig.subtitle}
         </p>
       </div>
+
+      {/* Dynamic Promotion Banner (Admin Managed) */}
+      {promoBanner && (
+        <div style={{
+          background: promoBanner.bg_gradient || "linear-gradient(135deg, #18181B 0%, #27272A 100%)",
+          borderRadius: "16px",
+          padding: "14px 16px",
+          color: "#FAF7EF",
+          border: `1.5px solid ${catConfig.accentColor}`,
+          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "10px",
+          position: "relative",
+          overflow: "hidden"
+        }}>
+          {promoBanner.image_url && (
+            <img
+              src={promoBanner.image_url}
+              alt={promoBanner.title}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 0.25,
+                pointerEvents: "none"
+              }}
+            />
+          )}
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{
+                fontSize: "9px",
+                fontWeight: "800",
+                backgroundColor: catConfig.accentColor,
+                color: "#151515",
+                padding: "1px 6px",
+                borderRadius: "4px",
+                textTransform: "uppercase"
+              }}>
+                {promoBanner.badge_text || "OFFER"}
+              </span>
+              {promoBanner.coupon_code && (
+                <span style={{ fontSize: "11px", color: "#FAF7EF", fontWeight: "700" }}>
+                  Code: <strong>{promoBanner.coupon_code}</strong>
+                </span>
+              )}
+            </div>
+            <h4 style={{ margin: "3px 0 2px 0", fontSize: "14px", fontWeight: "800", color: "#FAF7EF" }}>
+              {promoBanner.title}
+            </h4>
+            {promoBanner.subtitle && (
+              <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(250,247,239,0.8)" }}>
+                {promoBanner.subtitle}
+              </p>
+            )}
+          </div>
+          <div style={{
+            position: "relative",
+            zIndex: 2,
+            backgroundColor: catConfig.accentColor,
+            color: "#151515",
+            fontWeight: "850",
+            fontSize: "12px",
+            padding: "8px 12px",
+            borderRadius: "10px",
+            whiteSpace: "nowrap",
+            boxShadow: `0 2px 8px ${catConfig.accentColor}55`,
+            flexShrink: 0
+          }}>
+            {promoBanner.discount_percentage ? `${promoBanner.discount_percentage}% OFF` : (promoBanner.discount_amount ? `₹${promoBanner.discount_amount} OFF` : (promoBanner.button_text || "Special"))}
+          </div>
+        </div>
+      )}
 
       {/* Subcategory Filter Tabs */}
       <div style={{

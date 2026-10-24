@@ -1,10 +1,18 @@
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 
-from .models import BarberProfile, Service, BarberApplication, BarberSchedule, BarberReview
+from .models import (
+    BarberProfile,
+    Service,
+    BarberApplication,
+    BarberSchedule,
+    BarberReview,
+    PromotionBanner,
+)
 
 
 User = get_user_model()
@@ -524,3 +532,118 @@ class BarberReviewAdmin(admin.ModelAdmin):
             return obj.comment[:60] + ("..." if len(obj.comment) > 60 else "")
         return "-"
     comment_preview.short_description = "Comment"
+
+
+# ============================================================
+# PROMOTION & OFFER BANNER ADMIN
+# ============================================================
+
+@admin.register(PromotionBanner)
+class PromotionBannerAdmin(admin.ModelAdmin):
+    list_display = (
+        "banner_preview",
+        "title",
+        "badge_text",
+        "target_category",
+        "banner_type",
+        "coupon_code",
+        "discount_display",
+        "validity_status",
+        "priority",
+        "is_active",
+    )
+    list_filter = (
+        "is_active",
+        "target_category",
+        "banner_type",
+        "start_date",
+        "end_date",
+    )
+    search_fields = (
+        "title",
+        "subtitle",
+        "coupon_code",
+        "badge_text",
+    )
+    list_editable = ("is_active", "priority")
+    readonly_fields = ("created_at", "updated_at", "banner_preview_large")
+    fieldsets = (
+        ("Banner Content", {
+            "fields": (
+                "title",
+                "subtitle",
+                "badge_text",
+                "image",
+                "banner_preview_large",
+                "bg_gradient",
+            )
+        }),
+        ("Targeting & Action", {
+            "fields": (
+                "target_category",
+                "banner_type",
+                "action_link",
+                "button_text",
+            )
+        }),
+        ("Discount & Offers", {
+            "fields": (
+                "coupon_code",
+                "discount_percentage",
+                "discount_amount",
+            )
+        }),
+        ("Schedule & Visibility", {
+            "fields": (
+                "is_active",
+                "priority",
+                "start_date",
+                "end_date",
+                "created_at",
+                "updated_at",
+            )
+        }),
+    )
+    actions = ["activate_banners", "deactivate_banners"]
+
+    def banner_preview(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" style="width: 70px; height: 35px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd;" />')
+        return mark_safe(f'<div style="width: 70px; height: 35px; background: {obj.bg_gradient}; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: #fff; font-weight: bold; text-align: center; padding: 2px;">{obj.badge_text or "Banner"}</div>')
+    banner_preview.short_description = "Preview"
+
+    def banner_preview_large(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" style="max-width: 320px; max-height: 140px; border-radius: 10px; border: 1px solid #ccc;" />')
+        return mark_safe(f'<div style="width: 320px; height: 110px; background: {obj.bg_gradient}; border-radius: 10px; padding: 12px; color: #FAF7EF; box-sizing: border-box;"><h4 style="margin: 0 0 4px 0;">{obj.title}</h4><p style="margin: 0; font-size: 12px; opacity: 0.8;">{obj.subtitle}</p></div>')
+    banner_preview_large.short_description = "Banner Visual"
+
+    def discount_display(self, obj):
+        if obj.discount_percentage:
+            return f"{obj.discount_percentage}% OFF"
+        if obj.discount_amount:
+            return f"₹{obj.discount_amount} OFF"
+        return "-"
+    discount_display.short_description = "Discount"
+
+    def validity_status(self, obj):
+        if not obj.is_active:
+            return mark_safe('<span style="color: #999; font-weight: bold;">⏸️ Inactive</span>')
+        now = timezone.now()
+        if obj.start_date and now < obj.start_date:
+            return mark_safe(f'<span style="color: #d97706;">⏳ Starts {obj.start_date.strftime("%d %b")}</span>')
+        if obj.end_date and now > obj.end_date:
+            return mark_safe(f'<span style="color: #dc2626; font-weight: bold;">⛔ Expired</span>')
+        return mark_safe('<span style="color: #16a34a; font-weight: bold;">🟢 Live</span>')
+    validity_status.short_description = "Status"
+
+    def activate_banners(self, request, queryset):
+        queryset.update(is_active=True)
+        self.message_user(request, f"{queryset.count()} banners marked active.")
+    activate_banners.short_description = "Activate selected banners"
+
+    def deactivate_banners(self, request, queryset):
+        queryset.update(is_active=False)
+        self.message_user(request, f"{queryset.count()} banners deactivated.")
+    deactivate_banners.short_description = "Deactivate selected banners"
+
