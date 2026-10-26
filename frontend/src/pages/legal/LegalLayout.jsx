@@ -75,18 +75,8 @@ export default function LegalLayout({ title, subtitle, lastUpdated, children }) 
               textDecoration: "none",
             }}
           >
-            <div
-              style={{
-                width: "28px",
-                height: "28px",
-                borderRadius: "8px",
-                backgroundColor: "#E5A93C",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Scissors size={15} color="#151515" />
+            <div style={{ width: "32px", height: "32px", borderRadius: "50%", overflow: "hidden", border: "1px solid #E5A93C", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: "#000000" }}>
+              <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <span
               style={{

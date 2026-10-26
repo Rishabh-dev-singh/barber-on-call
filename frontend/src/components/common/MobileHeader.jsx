@@ -73,8 +73,8 @@ export default function MobileHeader({ unreadCount: initialUnreadCount = 0 }) {
                   onClick={() => navigate(isBarber ? "/barber/dashboard" : (isAuthenticated ? "/customer/dashboard" : "/"))}
                   style={{ cursor: "pointer" }}
                 >
-                  <div className="brand-logo-circle">
-                    <Scissors size={18} color="#D4A017" />
+                  <div className="brand-logo-circle" style={{ overflow: "hidden", borderRadius: "50%", border: "1.5px solid #D4A017", padding: 0, backgroundColor: "#000000", boxShadow: "0 0 8px rgba(212, 160, 23, 0.4)" }}>
+                    <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                   <div className="brand-info">
                     <span className="brand-title">Royal Grooming</span>

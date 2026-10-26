@@ -95,20 +95,8 @@ export default function Home() {
           >
             {/* Left: Brand Logo & Title */}
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div
-                style={{
-                  width: "38px",
-                  height: "38px",
-                  borderRadius: "10px",
-                  backgroundColor: "#E5A93C",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 2px 8px rgba(229, 169, 60, 0.35)",
-                  flexShrink: 0,
-                }}
-              >
-                <Scissors size={20} color="#151515" />
+              <div style={{ width: "42px", height: "42px", borderRadius: "50%", overflow: "hidden", border: "1.5px solid #E5A93C", boxShadow: "0 0 12px rgba(229, 169, 60, 0.45)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: "#000000" }}>
+                <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
 
               <div style={{ display: "flex", alignItems: "baseline", gap: "5px" }}>
@@ -854,18 +842,8 @@ export default function Home() {
           >
             {/* Brand Logo & Name */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  borderRadius: "8px",
-                  backgroundColor: "#E5A93C",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Scissors size={16} color="#151515" />
+              <div style={{ width: "34px", height: "34px", borderRadius: "50%", overflow: "hidden", border: "1px solid #E5A93C", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: "#000000" }}>
+                <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <div>
                 <div style={{ fontSize: "15px", fontWeight: "800", color: "#FFFFFF", lineHeight: 1.1 }}>

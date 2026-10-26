@@ -259,19 +259,8 @@ function CustomerRegister() {
       }}>
         {/* Brand Logo */}
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <div style={{
-            width: "52px",
-            height: "52px",
-            borderRadius: "14px",
-            backgroundColor: "#151515",
-            border: "1px solid rgba(212, 160, 23, 0.4)",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "12px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)"
-          }}>
-            <Scissors size={26} color="#D4A017" />
+          <div style={{ width: "68px", height: "68px", borderRadius: "50%", overflow: "hidden", border: "2px solid #D4A017", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "12px", boxShadow: "0 4px 16px rgba(212, 160, 23, 0.35)", backgroundColor: "#000000" }}>
+            <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
 
           <h1 style={{ fontSize: "22px", fontWeight: "800", color: "#151515", margin: "0 0 6px 0", letterSpacing: "-0.4px" }}>

@@ -46,17 +46,8 @@ function Navbar() {
         {/* Brand Logo & Location */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-            <div style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "10px",
-              backgroundColor: "rgba(212, 160, 23, 0.15)",
-              border: "1px solid rgba(212, 160, 23, 0.4)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
-              <Scissors size={20} color="#D4A017" />
+            <div style={{ width: "38px", height: "38px", borderRadius: "50%", overflow: "hidden", border: "1.5px solid #D4A017", boxShadow: "0 0 10px rgba(212, 160, 23, 0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: "#000000" }}>
+              <img src="/logo.png" alt="Royal Grooming" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div>
               <div style={{ fontSize: "16px", fontWeight: "800", color: "#FAF7EF", lineHeight: 1.1, letterSpacing: "-0.2px" }}>
